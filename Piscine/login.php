@@ -10,16 +10,18 @@
         <form method="post" action="connexion.php">
             <tr>
                 <td>Email:</td>
-                <td><input type="email" name="email"></td>
+                <td><input type="email" name="email" required></td>
             </tr>
             <tr>
                 <td>Mot de passe:</td>
-                <td><input type="password" name="pass"></td>
+                <td><input type="password" name="pass" required></td>
             </tr>
             <tr>
                 <td colspan="2" style="text-align: center;"><input type="submit" value="Se connecter"></td>
             </tr>
         </form>
     </table>
+
+    
 </body>
 </html>
