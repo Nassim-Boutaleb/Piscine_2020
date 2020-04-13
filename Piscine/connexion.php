@@ -60,7 +60,7 @@
                 //echo ("Login incorrect <br>");
                 $erreurLog = 1;
             }
-            if ($passOK == false)
+            else if ($passOK == false)
             {
                 //echo ("mdp incorrect");
                 $erreurLog = 2;
