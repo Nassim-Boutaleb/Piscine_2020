@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+        <?php
+            // Vérifier si des erreurs sont présentes (après un 1er envoi par connexion.php)
+            $erreur = isset($_POST["erreursLogin"])?$_POST["erreursLogin"] : "0" ; 
+        ?>
+        $(document).ready (function()
+        {
+            var erreur =<?php echo($erreur); ?>;
+            alert (erreur);
+        });
+    </script>
+
 </head>
 <body>
     <table>

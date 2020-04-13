@@ -30,7 +30,7 @@
             if ($login == $data["login"]) // le login existe : on va comparer les mots de passe maintenant
             {
                 $loginOK = true;
-                $sql2 = "SELECT password FROM utilisateur WHERE login='$login' "; // on regarde le mot de passe associé au login
+                $sql2 = "SELECT password FROM utilisateur WHERE login='$login' "; // on regarde le mot de passe associé au login entré
                 $result2 = mysqli_query($db_handle, $sql2);
                 
                 while ($data2 = mysqli_fetch_assoc($result2)) {
@@ -41,18 +41,36 @@
                     }
                 }
             }
-        }   //end while 
+        }  
         
-        // Affichage des erreurs
-        if ($loginOK == false)
+        // En cas d'erreur : retour à la page du formulaire avec la transmission des erreurs
+        if ($loginOK == false || $passOK == false)
         {
-            echo ("Login incorrect <br>");
-        }
-        if ($passOK == false)
-        {
-            echo ("mdp incorrect");
-        }
-	}   //end if 
+            $erreurLog = 0;   // 1 si le login est faux , 2 si le mot de passe est faux
+            if ($loginOK == false)
+            {
+                //echo ("Login incorrect <br>");
+                $erreurLog = 1;
+            }
+            if ($passOK == false)
+            {
+                //echo ("mdp incorrect");
+                $erreurLog = 2;
+            }
+            echo("erreur: $erreurLog");
+            ?>
+
+            <!-- Formulaire qui va transmettre à la page de login l'erreur. Il est envoyé automatiquement
+            par un script javascript -->
+            <form method="post" action="login.php" id="erreurF">
+                <input type="hidden" name="erreursLogin" value="<?php echo($erreurLog) ?>">
+            </form>
+            <script> 
+                document.getElementById("erreurF").submit(); // soumission du formulaire = reidrection vers login.php
+            </script>
+       <?php } // fin if erreur
+
+	}   //end if base de données existe
 	
 	//si le BDD n'existe pas 
 	else { 
