@@ -1,4 +1,5 @@
 <?php
+    session_start();  // Lancer une session
     //Booléen
     $loginOK = false;
     $passOK = false;
@@ -37,7 +38,14 @@
                     if ($pass == $data2["password"])  // le mot de passe est correct
                     {
                         $passOK = true;
-                        echo ("Connexion OK login: $login et pass: $pass");
+                        //echo ("Connexion OK login: $login et pass: $pass");
+                        // Configurer la session
+                        $_SESSION["login"] = $login;
+                        $_SESSION["motDePasse"] = $pass;
+                        ?>
+                        <meta http-equiv="refresh" content="0; url=test_acc.php">
+                        <?php
+
                     }
                 }
             }

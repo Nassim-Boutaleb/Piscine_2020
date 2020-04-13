@@ -12,8 +12,9 @@
         ?>
         $(document).ready (function()
         {
-            var erreur =<?php echo($erreur); ?>;
-            alert (erreur);
+            var erreur =<?php echo($erreur); ?>; // récupérer le numéro de l'erreur 
+            //alert (erreur);
+            // Alerter l'utilisateur sur son erreur ... 
         });
     </script>
 
