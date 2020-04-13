@@ -41,7 +41,6 @@
                         //echo ("Connexion OK login: $login et pass: $pass");
                         // Configurer la session
                         $_SESSION["login"] = $login;
-                        $_SESSION["motDePasse"] = $pass;
                         ?>
                         <meta http-equiv="refresh" content="0; url=test_acc.php">
                         <?php

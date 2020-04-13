@@ -43,7 +43,7 @@
                 <div class="card-body">
                     <div class="form-group">
                         <h5 class="card-title">Email/login</h5>
-                        <input type="email" class="form-control" name="email" id="email"required>
+                        <input type="email" class="form-control" name="email" id="email" required>
                         <div class="invalid-feedback">
                             Login inconnu
                         </div>
@@ -59,13 +59,14 @@
 
                     <button type="submit" class="btn btn-secondary">Se connecter</button>
                 </div>
+            </form>
 
                 <div class="card-footer">
                     Créer un compte <br>
-                    <a href="#"><button class="btn btn-secondary">Créer un compte</button></a>
+                    <a href="creer_compte.php"><button class="btn btn-secondary">Créer un compte</button></a>
                 </div>
                 
-            </form>
+            
         </div>
 
 
