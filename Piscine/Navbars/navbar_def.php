@@ -43,7 +43,7 @@
                             <li class="nav-item dropdown" id="menu_compte">
                                 <a class="nav-link dropdown-toggle" href="#" id="compte" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo("Bonjour ".$_SESSION["nom"]); ?></a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="#">Mes informations personnelles</a>
+                                    <a class="dropdown-item" href="gerer_compte.php">Mes informations personnelles</a>
                                     <a class="dropdown-item" href="deconnexion.php">Me déconnecter</a>
                                 </div>
                             </li>  
