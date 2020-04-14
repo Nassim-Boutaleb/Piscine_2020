@@ -6,7 +6,7 @@
         <meta charset="utf-8">  
         <meta name="viewport" content="width=device-width, initial-scale=1">      
          <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"> 
-        <link rel="stylesheet" type="text/css" href="styles.css"> 
+        <link rel="stylesheet" type="text/css" href="styles.css">  
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>  
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script> 
@@ -24,7 +24,15 @@
 
         <!-- Navbar (barre de navigation)-->
  
-        <?php require("Navbars/navbar_def.php");  ?>
+        <?php //require("Navbars/navbar_def.php");  ?>
+
+        <!-- Fenetre d'alerte -->
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
 
         <!-- Un caroussel (code inspiré de la doc de bootstrap ) -->
                        
