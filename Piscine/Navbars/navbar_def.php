@@ -4,6 +4,7 @@
     if (!isset ($_SESSION["login"])) // Si on est pas connecté
     {
         $connecte = 0;
+        $statut = "null";
     }
     else 
     {
@@ -16,7 +17,7 @@
         $(document).ready (function()
         {
             var connecte = <?php echo("$connecte"); ?>;
-            
+            var statut = "<?php echo("$statut"); ?>";
 
             if (connecte == 0) // Si on est pas connecte : empecher l'accès à acheter et vendre et panier
             {
@@ -45,6 +46,42 @@
                     "href" : "#"
                 }).addClass("disabled");
 
+            }
+
+            else if (connecte == 1 && statut == "acheteur") // Si on est un acheteur
+            {
+                // popover (pop up)
+                $(function () {
+                    $('[data-toggle="popover"]').popover()
+                });
+
+                // annuler popover au clic
+                $('.popover-dismiss').popover({
+                    trigger: 'focus'
+                });
+                
+                $("#Vendre").attr ({
+                    "aria-disabled" : "true",
+                    "href" : "#"
+                }).addClass("disabled");
+            }
+
+            else if (connecte == 1 && statut == "vendeur") // Si on est un acheteur
+            {
+                // popover (pop up)
+                $(function () {
+                    $('[data-toggle="popover"]').popover()
+                });
+
+                // annuler popover au clic
+                $('.popover-dismiss').popover({
+                    trigger: 'focus'
+                });
+                
+                $("#Acheter").attr ({
+                    "aria-disabled" : "true",
+                    "href" : "#"
+                }).addClass("disabled");
             }
         });
 </script>
@@ -78,7 +115,7 @@
             <span class="d-inline-block" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous avec un compte acheteur pour accéder à la page des achats">
                 <li class="nav-item"><a class="nav-link" href="login.php" id="Acheter">Acheter</a></li>
             </span>
-            <span class="d-inline-block" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous avec un compte vdendeur pour accéder à la page des ventes">
+            <span class="d-inline-block" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous avec un compte vendeur pour accéder à la page des ventes">
                 <li class="nav-item"><a class="nav-link" href="Gestionitem.php"  id="Vendre">Vendre</a></li>
             </span>
         </ul>

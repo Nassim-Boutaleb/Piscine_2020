@@ -28,10 +28,14 @@
 
         <a href="?action=ajout">Ajouter un produit</a>
         <br>
-        <a href="?action=modifier">Modifier un produit</a>
+        <a href="?action=modifsupp">Modifier ou supprimer un produit</a>
         <br>
-        <a href="?action=supp">Supprimer un produit</a>
         <br>
+        <br>
+
+
+       
+
 
         <!--TRAITEMENT DE L'AJOUT-->
 
@@ -50,54 +54,39 @@
                     $Prix = $_POST["Prixitem"];
                     $type = $_POST["typevente"];
                     $Photo = $_POST["Photoitem"];
-                    
-
-                    
-
-                echo"nom: $nom, $Description,$Categorie, $Prix , $type,
-                         $Photo ";
 
                     $database = "ecebay";
 
-                    if($nom&&$Description&&$Categorie&&$Prix&&$type&&$Photo){
-                        echo"Champs ok";
-
+                    if($nom&&$Description&&$Categorie&&$Prix&&$type&&$Photo)
+                    {
+                       
                         $db_handle = mysqli_connect('localhost', 'root', 'root'); 
                         $db_found = mysqli_select_db($db_handle, $database); 
-                        if ($db_found) { 
-                            echo"Bon pour la bdd";
-
+                        if ($db_found) 
+                        { 
                             $sql="INSERT INTO item (Nom,Categorie,Description,Prix,TypeVente,Image) VALUES ('$nom','$Categorie','$Description','$Prix','$type','$Photo')";
                             $result = mysqli_query($db_handle, $sql);
 
                             if($result)
+                            {                              
+                                echo"Article ajouté";
+                                header("refresh:2, url=Gestionitem.php");
+                            }
+                            else
                             {
-                                
-                                echo"inserted";
+                                echo"L'article n'a pas pu être ajouté";
                             }
-                            else{
-                                echo"not inserted";
-                            }
-
                         }
-                        else{
+                        else
+                        {
                             echo"BDD ineexistante";
                         }
-
-                   
-
-                       
-
-                    } else {
-
+                    } 
+                    else 
+                    {
                         echo"veuillez remplir tout les champs";
                     }
-
-
-
-
                 }
-
         ?>
 <!--FORMULAIRE D'AJOUT-->
 <div class="container">
@@ -141,16 +130,56 @@
 
             
 
-            }else if($GET['action']=='modifier'){
+            }else if($_GET['action']=='modifsupp'){
+                $database = "ecebay";
 
-            }else if($_GET['action']=='supp'){
+                
+                $db_handle = mysqli_connect('localhost', 'root', 'root'); 
+                $db_found = mysqli_select_db($db_handle, $database); 
+                { 
+                    
+                $sql="SELECT * FROM item";
 
-            }else{
+                $result = mysqli_query($db_handle, $sql);
 
-                die('erreur');
+                
+
+                while ($data = mysqli_fetch_assoc($result)){
+
+                    
+                    echo $data["NumeroID"]."  ";
+                   
+                    echo $data["Nom"];
+                    
+                    ?>
+                    <br>
+                    <a href="?action=modifier&amp;id=<?php echo $data["NumeroID"];?>"> Modifier </a>
+                    <a href="?action=supp&amp;id=<?php echo $data["NumeroID"];?>"> Supprimer <br><br></a>
+                    <?php
+
+                }
+            }
+                
+            }
+            else if($_GET['action']=='modifier')
+            {
+
+            }
+            else if($_GET['action']=='supp')
+            {
+                $database = "ecebay";
+                $db_handle = mysqli_connect('localhost', 'root', 'root'); 
+                $db_found = mysqli_select_db($db_handle, $database);
+                if ($db_found) 
+                {
+                    echo"BDD OK";
+                    $id=$_GET['id'];
+                    $sql2="DELETE FROM item WHERE NumeroID=$id";
+                    $result2 = mysqli_query($db_handle, $sql2);
+
+                }                
+            }
         }
-        }
-
         ?>
 
     </body>
