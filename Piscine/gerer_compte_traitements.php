@@ -15,6 +15,7 @@
     $pays = isset($_POST["pays"])?$_POST["pays"] : "" ;
     $tel = isset($_POST["tel"])?$_POST["tel"] : "" ;
     $statut = isset($_POST["statut"])?$_POST["statut"] : "" ;
+    ?> <script> alert("<?php echo($statut);?>"); </script> <?php
 
     $ancienLogin = $_SESSION["login"];
 
@@ -81,7 +82,7 @@
                 ?> <script> alert("Connexion succès"); </script> <?php
 
                 // Redirection
-                ?> <meta http-equiv="refresh" content="0; url=accueil.php"> <?php
+                ?> <meta http-equiv="refresh" content="0; url=gerer_compte.php"> <?php
             }
             else
             {

@@ -44,6 +44,8 @@
         }   //end else 
 
         // Gestion des erreurs (après avoir validé le formulaire une 1ere fois)
+        $erreur = isset($_POST["erreursCreation"])?$_POST["erreursCreation"] : "0" ; 
+        
     ?>
     <script>
         $(document).ready (function() {
@@ -52,10 +54,12 @@
             if (statut == "vendeur")
             {
                 $("#statutV").prop("checked", true).trigger("click");
+                $("#statutV").removeAttr("disabled");
             }
             else if (statut == "acheteur")
             {
                 $("#statutA").prop("checked", true).trigger("click");
+                $("#statutA").removeAttr("disabled");
                 
             }
             
@@ -93,6 +97,17 @@
 
             // Gestion des erreurs (après avoir envoyé le formulaire une première fois)
             // Indique à l'utilisateur son erreur
+
+            var erreur =<?php echo($erreur); ?>; // récupérer le numéro de l'erreur 
+            // Alerter l'utilisateur sur son erreur ...
+            if (erreur == 1)
+            {
+                $("#email").addClass ("is-invalid");
+
+                // Simuler un appui sur le bouton modifier
+                $("#modifierBtn").trigger("click");
+            } 
+        
 
 
             
