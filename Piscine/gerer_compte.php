@@ -8,14 +8,6 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>  
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script> 
     <title>Mes informations</title>
-    <!-- <link href="login.css" rel="stylesheet" type="text/css"/> -->
-</head>
-
-<body>
-    <!-- Navbar -->
-    <?php require("Navbars/navbar_def.php");  ?>
-
-    <!-- Contenu page -->
     <link href="login.css" rel="stylesheet" type="text/css"/> 
     <?php
         // Se connecter à la BDD pour récupérer les informations à afficher
@@ -36,16 +28,6 @@
             $result = mysqli_query($db_handle, $sql); 
 
             while ($data = mysqli_fetch_assoc($result)) {
-                $nom = $data["nom"];
-                $nom = $data["nom"]; 
-                $nom = $data["nom"]; 
-                $nom = $data["nom"]; 
-                $nom = $data["nom"]; 
-                $nom = $data["nom"]; 
-                $nom = $data["nom"]; 
-                $nom = $data["nom"]; 
-                $nom = $data["nom"];  
-    ?>
                 $password = $data["password"];
                 $nom = $data["nom"]; 
                 $prenom = $data["prenom"]; 
@@ -144,14 +126,6 @@
        
         <div class="card border-secondary text-center">
             <div class="card-header">
-                Créer un compte
-            </div>
-
-            <form method="post" action="creation_compte.php">
-                <div class="card-body">
-                    <div class="form-group row">
-                        <label for="email" class="col-sm-2 col-form-label">Email</label>
-                        <input type="email" class="form-control col-sm-10" name="email" id="email"required>
                 Mes informations
             </div>
 
