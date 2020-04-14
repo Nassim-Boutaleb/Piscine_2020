@@ -14,7 +14,7 @@
         $login = $_SESSION["login"];  // qui est connecté ?
 
         //identifier le nom de base de données 
-        $database = "ebayece"; 
+        $database = "ecebay"; 
         
         //connectez-vous dans votre BDD 
         //Rappel : votre serveur = localhost | votre login = root | votre mot de pass = '' (rien) 

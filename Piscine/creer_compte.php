@@ -9,7 +9,7 @@
     <link href="login.css" rel="stylesheet" type="text/css"/>
     <script>
         <?php
-            // Vérifier si des erreurs sont présentes (après un 1er envoi par connexion.php)
+            // Vérifier si des erreurs sont présentes (après un 1er envoi par loginTraitement.php)
             $erreur = isset($_POST["erreursCreation"])?$_POST["erreursCreation"] : "0" ; 
         ?>
         $(document).ready (function()
@@ -35,7 +35,7 @@
                 Créer un compte
             </div>
 
-            <form method="post" action="creation_compte.php">
+            <form method="post" action="creer_compte_Traitements.php">
                 <div class="card-body">
                     <div class="form-group row">
                         <label for="email" class="col-sm-2 col-form-label">Email</label>
