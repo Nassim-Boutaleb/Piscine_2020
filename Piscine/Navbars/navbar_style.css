@@ -1,0 +1,24 @@
+/*--- navigation bar ---*/ 
+.navbar {  
+    background:#ADD8E6; /* Couleur de fond de la navbar */
+} 
+.nav-link, .navbar-brand {  /* Pour les boutons de la navbar */
+     color: #fff;   /* Couleur du texte des boutons */
+     cursor: pointer; 
+} 
+.nav-link {   
+    margin-right: 1em !important; 
+} 
+.nav-link:hover {  
+     color: #000; /* Survol des boutons de la navbar avec souris */
+} 
+.dropdown-menu{
+    background-color: #ADD8E6;
+}
+
+.dropdown-item{
+color: #fff; }
+
+#elementsDroite {
+    margin-right: 10px;
+}

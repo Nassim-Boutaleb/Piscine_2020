@@ -24,6 +24,10 @@
     </script>
 
 <body>
+    <!-- Navbar -->
+    <?php require("Navbars/navbar_def.php");  ?>
+
+    <!-- Contenu page -->
     <div class="container-fluid">
        
         <div class="card border-secondary text-center">
@@ -110,13 +114,13 @@
                           <legend class="col-form-label col-sm-2 pt-0">Type de compte</legend>
                           <div class="col-sm-10">
                             <div class="form-check">
-                              <input class="form-check-input" type="radio" name="statut" id="statutA" value="acheteur">
+                              <input class="form-check-input" type="radio" name="statut" id="statutA" value="acheteur" required>
                               <label class="form-check-label" for="statutA">
                                 Acheteur
                               </label>
                             </div>
                             <div class="form-check">
-                              <input class="form-check-input" type="radio" name="statut" id="statutV" value="vendeur">
+                              <input class="form-check-input" type="radio" name="statut" id="statutV" value="vendeur" required>
                               <label class="form-check-label" for="statutV">
                                 Vendeur
                               </label>

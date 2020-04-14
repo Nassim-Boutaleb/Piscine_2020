@@ -8,6 +8,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script> 
     <title>Connexion</title>
     <link href="login.css" rel="stylesheet" type="text/css"/>
+    
     <script>
         <?php
             // Vérifier si des erreurs sont présentes (après un 1er envoi par connexion.php)
@@ -32,6 +33,10 @@
 
 </head>
 <body>
+    <!-- Navbar -->
+    <?php require("Navbars/navbar_def.php");  ?>
+
+    <!-- Contenu de la page -->
     <div class="container-fluid">
        
         <div class="card border-secondary text-center">

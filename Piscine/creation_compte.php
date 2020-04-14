@@ -69,12 +69,13 @@
             if ($result)
             {
                  $_SESSION["login"]=$login;
+                 $_SESSION["nom"] = $nom;
  
                 // Message de succès
                 ?> <script> alert("Connexion succès"); </script> <?php
 
                 // Redirection
-                ?> <meta http-equiv="refresh" content="0; url=test_acc.php"> <?php
+                ?> <meta http-equiv="refresh" content="0; url=accueil.php"> <?php
             }
             else
             {
