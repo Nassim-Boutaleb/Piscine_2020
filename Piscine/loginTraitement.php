@@ -42,13 +42,15 @@
                         // Configurer la session
                         $_SESSION["login"] = $login;
 
-                        $sql2 = "SELECT nom FROM utilisateur WHERE login='$login' "; // on regarde le nom associé au login entré
+                        $sql2 = "SELECT * FROM utilisateur WHERE login='$login' "; // on regarde le nom associé au login entré
                         $result2 = mysqli_query($db_handle, $sql2);
                 
                         while ($data2 = mysqli_fetch_assoc($result2)) {
                             $nom = $data2["nom"];
+                            $statut = $data2["statut"];
                         }
                         $_SESSION["nom"] = $nom;
+                        $_SESSION["statut"] = $statut;
                         ?>
                         <meta http-equiv="refresh" content="0; url=accueil.php">
                         <?php

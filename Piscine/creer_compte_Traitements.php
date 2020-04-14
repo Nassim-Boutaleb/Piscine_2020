@@ -70,6 +70,7 @@
             {
                  $_SESSION["login"]=$login;
                  $_SESSION["nom"] = $nom;
+                 $_SESSION["statut"] = $statut;
  
                 // Message de succès
                 ?> <script> alert("Connexion succès"); </script> <?php

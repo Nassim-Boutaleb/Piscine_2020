@@ -15,7 +15,7 @@
     $pays = isset($_POST["pays"])?$_POST["pays"] : "" ;
     $tel = isset($_POST["tel"])?$_POST["tel"] : "" ;
     $statut = isset($_POST["statut"])?$_POST["statut"] : "" ;
-    ?> <script> alert("<?php echo($statut);?>"); </script> <?php
+    
 
     $ancienLogin = $_SESSION["login"];
 
@@ -77,6 +77,7 @@
             {
                  $_SESSION["login"]=$login;
                  $_SESSION["nom"] = $nom;
+                 $_SESSION["statut"] = $statut;
  
                 // Message de succès
                 ?> <script> alert("Connexion succès"); </script> <?php
