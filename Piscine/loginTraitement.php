@@ -12,7 +12,7 @@
     // Comparer le login avec les logins dans la BDD et vérifier qu'il existe.
 
     //identifier le nom de base de données 
-	$database = "ebayece"; 
+	$database = "ecebay"; 
 	
 	//connectez-vous dans votre BDD 
 	//Rappel : votre serveur = localhost | votre login = root | votre mot de pass = '' (rien) 

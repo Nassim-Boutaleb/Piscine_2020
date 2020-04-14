@@ -11,7 +11,7 @@
     
     <script>
         <?php
-            // Vérifier si des erreurs sont présentes (après un 1er envoi par connexion.php)
+            // Vérifier si des erreurs sont présentes (après un 1er envoi par loginTraitement.php)
             $erreur = isset($_POST["erreursLogin"])?$_POST["erreursLogin"] : "0" ; 
         ?>
         $(document).ready (function()
@@ -40,7 +40,7 @@
     <div class="container-fluid">
        
         <div class="card border-secondary text-center">
-            <form method="post" action="connexion.php">
+            <form method="post" action="loginTraitement.php">
                 <div class="card-header">
                     Se connecter
                 </div>
