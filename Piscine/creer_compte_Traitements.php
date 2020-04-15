@@ -72,11 +72,10 @@
                  $_SESSION["nom"] = $nom;
                  $_SESSION["statut"] = $statut;
  
-                // Message de succès
-                ?> <script> alert("Connexion succès"); </script> <?php
+    
 
                 // Redirection
-                ?> <meta http-equiv="refresh" content="0; url=accueil.php"> <?php
+                ?> <meta http-equiv="refresh" content="0; url=accueil.php?alertCode=2"> <?php
             }
             else
             {

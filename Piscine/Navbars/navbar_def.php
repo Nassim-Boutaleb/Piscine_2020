@@ -31,6 +31,7 @@
                     trigger: 'focus'
                 });
                 
+                // Désactiver les liens
                 $("#Acheter").attr ({
                     "aria-disabled" : "true",
                     "href" : "#"
@@ -59,14 +60,19 @@
                 $('.popover-dismiss').popover({
                     trigger: 'focus'
                 });
+
+                // désactiver les popovers de Achat et panier qui sont accssibles aux acheteurs
+                $("#ppvAcheter").removeAttr("data-toggle");
+                $("#ppvPanier").removeAttr("data-toggle");
                 
+                // Bloquer le lien vers vendre
                 $("#Vendre").attr ({
                     "aria-disabled" : "true",
                     "href" : "#"
                 }).addClass("disabled");
             }
 
-            else if (connecte == 1 && statut == "vendeur") // Si on est un acheteur
+            else if (connecte == 1 && statut != "acheteur") // Si on n'est pas un acheteur (vendeur ou admin)
             {
                 // popover (pop up)
                 $(function () {
@@ -77,8 +83,17 @@
                 $('.popover-dismiss').popover({
                     trigger: 'focus'
                 });
+
+                // Supprimer le popover de vendre qui est accsssible
+                $("#ppvVendre").removeAttr("data-toggle");
                 
+                // Bloquer les liens vers acheter et panier
                 $("#Acheter").attr ({
+                    "aria-disabled" : "true",
+                    "href" : "#"
+                }).addClass("disabled");
+
+                $("#panier").attr ({
                     "aria-disabled" : "true",
                     "href" : "#"
                 }).addClass("disabled");
@@ -112,16 +127,26 @@
 
             </li>
             <!--FIN MENU DESCENDANT-->
-            <span class="d-inline-block" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous avec un compte acheteur pour accéder à la page des achats">
+            <span class="d-inline-block" id="ppvAcheter" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous avec un compte acheteur pour accéder à la page des achats">
                 <li class="nav-item"><a class="nav-link" href="login.php" id="Acheter">Acheter</a></li>
             </span>
-            <span class="d-inline-block" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous avec un compte vendeur pour accéder à la page des ventes">
+            <span class="d-inline-block" id="ppvVendre" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous avec un compte vendeur pour accéder à la page des ventes">
                 <li class="nav-item"><a class="nav-link" href="Gestionitem.php"  id="Vendre">Vendre</a></li>
             </span>
+
+            <!-- Pour les admins seulement: bouton gerer comptes -->
+            <?php 
+                if ($statut == "administrateur")
+                {
+                    ?>
+                        <li class="nav-item"><a class="nav-link" href="admin_gerer_comptes.php" id="admin_gerer_comptes">Gerer les comptes</a></li>
+                    <?php
+                }
+            ?>
         </ul>
 
         <ul class="navbar-nav ml-auto" id="elementsDroite">
-            <span class="d-inline-block" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous pour accéder au panier">
+            <span class="d-inline-block" id="ppvPanier" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous pour accéder au panier">
                 <li class="nav-item"><a class="nav-link" href="panier.php" id="panier"><i class="fa fa-shopping-cart"></i> Panier
                         <span class="badge badge-light">3
                             <!-- FAIRE UN JAVASCRIPT POUR RENDRE LE NOMBRE DYNAMIQUE--></span> <span
@@ -132,21 +157,22 @@
             <?php 
                         if (!isset ($_SESSION["login"])) // Si on est pas connecté
                         {
-                            ?> <li class="nav-item"><a class="nav-link" href="login.php">Se connecter/Créer compte</a></li> 
-            <?php
+                            ?> 
+                                <li class="nav-item"><a class="nav-link" href="login.php">Se connecter/Créer compte</a></li> 
+                            <?php
                         }
                         else if (isset ($_SESSION["login"])) // Si une session est configurée = si on est connecté
                         {
-            ?>
-                            <li class="nav-item dropdown" id="menu_compte">
-                                <a class="nav-link dropdown-toggle" href="#" id="compte" role="button" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false"><?php echo("Bonjour ".$_SESSION["nom"]); ?></a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="gerer_compte.php">Mes informations personnelles</a>
-                                    <a class="dropdown-item" href="deconnexion.php">Me déconnecter</a>
-                                </div>
-                            </li>
-            <?php
+                            ?>
+                                <li class="nav-item dropdown" id="menu_compte">
+                                    <a class="nav-link dropdown-toggle" href="#" id="compte" role="button" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false"><?php echo("Bonjour ".$_SESSION["nom"]); ?></a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="gerer_compte.php">Mes informations personnelles</a>
+                                        <a class="dropdown-item" href="deconnexion.php">Me déconnecter</a>
+                                    </div>
+                                </li>
+                            <?php
                         } 
             ?>
         </ul>
