@@ -1,45 +1,56 @@
 <?php session_start(); ?>
-<!DOCTYPE html> 
-<html> 
-    <head>  
-        <title>Ebay ECE</title> 
-        <meta charset="utf-8">  
-        <meta name="viewport" content="width=device-width, initial-scale=1">      
-         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"> 
-        <link rel="stylesheet" type="text/css" href="styles.css"> 
+<!DOCTYPE html>
+<html>
 
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>  
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script> 
+<head>
+    <title>Ebay ECE</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="styles.css">
 
-        <script type="text/javascript">      
-            $(document).ready(function(){           
-                $('.header').height($(window).height());  // Taille du header = taille totale de l'écran   
-            }); 
-        </script>
-    </head> 
-    
-    <body> 
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
 
-        <!--HEADER-->
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $("#modifierImage").on("click",function(){  // Cliquer sur l'encoche modifier image= activer le champ
+          
+            if ($("#champModifierImage").attr("disabled") == "disabled")
+            {
+                $("#champModifierImage").removeAttr("disabled");
+            }
+            else
+            {
+                $("#champModifierImage").prop("disabled", true).trigger("click");
+            }
+        });   
+    });
+    </script>
+</head>
 
-        <!-- Navbar (barre de navigation)-->
- 
-        <?php require("Navbars/navbar_def.php");  ?>
+<body>
 
-        <a href="?action=ajout">Ajouter un produit</a>
-        <br>
-        <a href="?action=modifsupp">Modifier ou supprimer un produit</a>
-        <br>
-        <br>
-        <br>
+    <!--HEADER-->
+
+    <!-- Navbar (barre de navigation)-->
+
+    <?php require("Navbars/navbar_def.php");  ?>
+
+    <a href="?action=ajout">Ajouter un produit</a>
+    <br>
+    <a href="?action=modifsupp">Modifier ou supprimer un produit</a>
+    <br>
+    <br>
+    <br>
 
 
-       
 
 
-        <!--TRAITEMENT DE L'AJOUT-->
 
-        <?php
+    <!--TRAITEMENT DE L'AJOUT-->
+
+    <?php
 
         if(isset($_GET['action'])){
            
@@ -53,8 +64,26 @@
                     $Categorie= $_POST["Categorieitem"];
                     $Prix = $_POST["Prixitem"];
                     $type = $_POST["typevente"];
-                    $Photo = $_POST["Photoitem"];
+                    
+                    // Pour le chargement de l'image
+                    $uploaddir = 'Images/Ventes/'; // Chemin où les images seront enregistrées sur wamp
+                    $uploadfile = $uploaddir . basename($_FILES['Photoitem']['name']);
 
+                    
+                    if (move_uploaded_file($_FILES['Photoitem']['tmp_name'], $uploadfile)) {
+                        echo "Le fichier est valide, et a été téléchargé
+                            avec succès. Voici plus d'informations :\n";
+                    } else {
+                        echo "Attaque potentielle par téléchargement de fichiers.
+                            Voici plus d'informations :\n";
+                        echo 'Voici quelques informations de débogage :';
+                        print_r($_FILES);
+                    }
+
+                    // Pour la database: on enregistre le chemin de l'image
+                    $Photo = $uploadfile;
+
+                    // Connection database
                     $database = "ecebay";
 
                     if($nom&&$Description&&$Categorie&&$Prix&&$type&&$Photo)
@@ -79,7 +108,7 @@
                         }
                         else
                         {
-                            echo"BDD ineexistante";
+                            echo"BDD inexistante";
                         }
                     } 
                     else 
@@ -88,45 +117,57 @@
                     }
                 }
         ?>
-<!--FORMULAIRE D'AJOUT-->
-<div class="container">
-    <form action="" method="POST" >
-        <div class="form-group">
-            <label for="nomitem">Nom</label>
-             <input type="text" class="form-control" name="nomitem" aria-describedby="AideNom" placeholder="Nom Article">
-            <small id="AideNom" class="form-text text-muted">Le nom de l'article mis en vente</small>
-        </div>
-        <div class="form-group">
-            <label for="Descriptionitem">Description</label>
-            <input type="text" class="form-control" name="Descriptionitem" placeholder="Description">
-        </div>
-         <div class="form-group">
-            <label for="Categorieitem">Catégorie</label>
-            <input type="text" class="form-control" name="Categorieitem" placeholder="Catégorie">
-        </div>
-        <div class="form-group">
-            <label for="Prixitem">Prix</label>
-            <input type="text" class="form-control" name="Prixitem" placeholder="Prix">
-        </div>
-        <div class="form-group">
-            <label for="typevente">Type de vente </label>
-            <input type="text" class="form-control" name="typevente" placeholder="Type de vente">
-        </div>
 
+    <!--FORMULAIRE D'AJOUT-->
+    <div class="container">
+        <form enctype="multipart/form-data" action="" method="POST">
+            <div class="form-group">
+                <label for="nomitem">Nom</label>
+                <input type="text" class="form-control" name="nomitem" aria-describedby="AideNom"
+                    placeholder="Nom Article">
+                <small id="AideNom" class="form-text text-muted">Le nom de l'article mis en vente</small>
+            </div>
+            <div class="form-group">
+                <label for="Descriptionitem">Description</label>
+                <textarea class="form-control" name="Descriptionitem" placeholder="Description"> </textarea>
+            </div>
 
             <div class="form-group">
-            <label for="Photoitem">Photo de l'article</label>
-            <input type="file" class="form-control-file" name="Photoitem">
-        </div>
-        <div class="form-check">
-            <input type="checkbox" class="form-check-input" name="Check1">
-            <label class="form-check-label" for="Check1">Validation</label>
-        </div>
-        <button type="submit" class="btn btn-primary" name='submit'>Soumettre</button>
-    </form>
-</div>
+                <label for="Prixitem">Prix</label>
+                <input type="text" class="form-control" name="Prixitem" placeholder="Prix">
+            </div>
+            <div class="form-group">
+                <label for="Categorieitem">Catégorie</label>
 
-        <?php
+                <select id="Categorieitem" name="Categorieitem">
+                    <option value="Feraille ou Or">Feraille ou Or</option>
+                    <option value="Bon pour Muse">Bon pour le musé</option>
+                    <option value="Accesoire VIP">Accessoire VIP</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="typevente">Type de vente </label>
+                <select id="typevente" name="typevente">
+                    <option value="Enchere">Enchère</option>
+                    <option value="Meilleure Offre">Meilleure Offre</option>
+                    <option value="Achat direct">Achat immédiat</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="hidden" name="MAX_FILE_SIZE" value="300000" />
+                <label for="Photoitem">Photo de l'article</label>
+                <input type="file" class="form-control-file" name="Photoitem" accept=".jpg, .jpeg, .png">
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="Check1">
+                <label class="form-check-label" for="Check1">Validation</label>
+            </div>
+            <button type="submit" class="btn btn-primary" name='submit'>Soumettre</button>
+        </form>
+    </div>
+
+    <!-- Traitement modifier ou supprimer -->
+    <?php
 
             
 
@@ -152,19 +193,137 @@
                     echo $data["Nom"];
                     
                     ?>
-                    <br>
-                    <a href="?action=modifier&amp;id=<?php echo $data["NumeroID"];?>"> Modifier </a>
-                    <a href="?action=supp&amp;id=<?php echo $data["NumeroID"];?>"> Supprimer <br><br></a>
-                    <?php
+    <br>
+    <button class="btn btn-secondary"><a href="?action=modifier&amp;id=<?php echo $data["NumeroID"];?>"> Modifier
+        </a></button>
+    <button class="btn btn-secondary"><a href="?action=supp&amp;id=<?php echo $data["NumeroID"];?>"> Supprimer
+        </a></button>
+    <br><br>
+
+    <?php
 
                 }
             }
                 
             }
-            else if($_GET['action']=='modifier')
+            else if($_GET['action']=='modifier')       
             {
 
+
+
+
+                $database = "ecebay";
+                $db_handle = mysqli_connect('localhost', 'root', 'root'); 
+                $db_found = mysqli_select_db($db_handle, $database);
+                if ($db_found) 
+                {
+
+                    $id=$_GET['id'];
+                    
+                    $sql3="SELECT * FROM item WHERE NumeroID='$id' ";
+                    $result3 = mysqli_query($db_handle, $sql3);
+                    $data = mysqli_fetch_assoc($result3);
+               
+                }
+
+                ?>
+                    <div class="container">
+                        <form enctype="multipart/form-data" action="" method="POST">
+                            <div class="form-group">
+                                <label for="nomitem">Nom</label>
+                                <input type="text" class="form-control" name="nomitem" aria-describedby="AideNom"
+                                    value="<?php echo $data["Nom"];?>">
+                                <small id="AideNom" class="form-text text-muted">Le nom de l'article mis en vente</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="Descriptionitem">Description</label>
+                                <textarea class="form-control" name="Descriptionitem"><?php echo $data["Description"];?> </textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="Prixitem">Prix</label>
+                                <input type="text" class="form-control" name="Prixitem" value="<?php echo $data["Prix"];?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="Categorieitem">Catégorie: <?php echo $data["Categorie"];?> </label>
+
+                                <select id="Categorieitem" name="Categorieitem" value="<?php echo $data["Categorie"];?>">
+                                    <option value="Feraille ou Or">Feraille ou Or</option>
+                                    <option value="bon pour Musé">Bon pour le musé</option>
+                                    <option value="Accesoire VIP">Accessoire VIP</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="typevente">Type de vente : <?php echo $data["TypeVente"];?> </label>
+                                <select id="typevente" name="typevente">
+                                    <?php echo $data["TypeVente"];?>"
+                                    <option value="Enchere">Enchère</option>
+                                    <option value="Meilleure Offre">Meilleure Offre</option>
+                                    <option value="Achat direct">Achat immédiat</option>
+                                </select>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="customCheck1" name="modImg">
+                                <label class="custom-control-label" for="customCheck1" id="modifierImage">Modifier l'image de l'article</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="hidden" name="MAX_FILE_SIZE" value="300000" />
+                                <label for="PhotoitemR">Photo de l'article</label>
+                                <input type="file" class="form-control-file" name="PhotoitemR" id="champModifierImage" disabled>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" name="modif" value='Modifier'>Modifier</button>
+                        </form>
+                    </div>
+
+
+
+    <?php
+                     if(isset($_POST['modif'])){
+                        $nom = $_POST["nomitem"];
+                        $Description =$_POST["Descriptionitem"];
+                        $Categorie= $_POST["Categorieitem"];
+                        $Prix = $_POST["Prixitem"];
+                        $type = $_POST["typevente"];
+                        if (isset($_POST["modImg"]))// Si on a modifié la photo (case cochée): on la télécharge à nouveau
+                        {
+                            // Pour le chargement de l'image
+                            $uploaddir = 'Images/Ventes/'; // Chemin où les images seront enregistrées sur wamp
+                            $uploadfile = $uploaddir . basename($_FILES['PhotoitemR']['name']);
+
+                            
+                            if (move_uploaded_file($_FILES['PhotoitemR']['tmp_name'], $uploadfile)) {
+                                echo "Le fichier est valide, et a été téléchargé
+                                    avec succès. Voici plus d'informations :\n";
+                            } else {
+                                echo "Attaque potentielle par téléchargement de fichiers.
+                                    Voici plus d'informations :\n";
+                                echo 'Voici quelques informations de débogage :';
+                                print_r($_FILES);
+                            }
+
+                            // Pour la database: on enregistre le chemin de l'image
+                            $Photo = $uploadfile;
+                        }
+
+                        else // Si on ne l'a pas modifié : on garde la valeur actuelle dans la BDD
+                        {
+                            $Photo = $data["Image"];
+                        }
+
+                        echo"submit ok   - ";
+                        
+                        $sql4="UPDATE item SET Nom='$nom',Categorie='$Categorie',Description='$Description',Prix='$Prix',TypeVente='$type',Image='$Photo' WHERE NumeroID='$id'";
+                        $result4 = mysqli_query($db_handle, $sql4);
+                        if($result4){
+                            echo"requete OK";
+                        }
+
+                }
+
             }
+            /* SUPPRESION ARTICLE*/
+
             else if($_GET['action']=='supp')
             {
                 $database = "ecebay";
@@ -176,11 +335,14 @@
                     $id=$_GET['id'];
                     $sql2="DELETE FROM item WHERE NumeroID=$id";
                     $result2 = mysqli_query($db_handle, $sql2);
-
                 }                
             }
         }
         ?>
 
-    </body>
-    </html>
+</body>
+<footer>
+    <?php require("Footer.php");  ?>
+</footer>
+
+</html>

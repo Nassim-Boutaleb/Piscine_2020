@@ -1,0 +1,13 @@
+.card {
+    margin: 60px auto;
+    width: 90%;
+}
+
+body {
+    background-color: bisque;
+}
+
+/** Masquer les alertes */
+.alert {
+    display: none;
+}

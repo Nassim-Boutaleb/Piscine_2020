@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
     <meta charset="utf-8"> 
@@ -119,18 +120,32 @@
                                 Acheteur
                               </label>
                             </div>
+
                             <div class="form-check">
                               <input class="form-check-input" type="radio" name="statut" id="statutV" value="vendeur" required>
                               <label class="form-check-label" for="statutV">
                                 Vendeur
                               </label>
                             </div>
+
+                            <?php
+                                $statut = isset($_SESSION["statut"])?$_SESSION["statut"]:" ";
+                                if ($statut=="administrateur") // Seul un admin peut créer un compte admin
+                                {
+                                    ?>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="statut" id="statutAdmin" value="administrateur" required>
+                                            <label class="form-check-label" for="statutAdmin">
+                                                 Admin
+                                            </label>
+                                        </div>
+                                  <?php
+                                }
+                            ?>
                           </div>
                         </div>
-                      </fieldset>
-                    
-                    
-
+                    </fieldset>
+       
                     <button type="submit" class="btn btn-secondary">Créer mon compte</button>
                 </div>
 
