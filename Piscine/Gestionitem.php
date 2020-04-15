@@ -9,12 +9,22 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="styles.css">
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
 
     <script type="text/javascript">
     $(document).ready(function() {
-        $('.header').height($(window).height()); // Taille du header = taille totale de l'écran   
+        $("#modifierImage").on("click",function(){  // Cliquer sur l'encoche modifier image= activer le champ
+          
+            if ($("#champModifierImage").attr("disabled") == "disabled")
+            {
+                $("#champModifierImage").removeAttr("disabled");
+            }
+            else
+            {
+                $("#champModifierImage").prop("disabled", true).trigger("click");
+            }
+        });   
     });
     </script>
 </head>
@@ -54,8 +64,26 @@
                     $Categorie= $_POST["Categorieitem"];
                     $Prix = $_POST["Prixitem"];
                     $type = $_POST["typevente"];
-                    $Photo = $_POST["Photoitem"];
+                    
+                    // Pour le chargement de l'image
+                    $uploaddir = 'Images/Ventes/'; // Chemin où les images seront enregistrées sur wamp
+                    $uploadfile = $uploaddir . basename($_FILES['Photoitem']['name']);
 
+                    
+                    if (move_uploaded_file($_FILES['Photoitem']['tmp_name'], $uploadfile)) {
+                        echo "Le fichier est valide, et a été téléchargé
+                            avec succès. Voici plus d'informations :\n";
+                    } else {
+                        echo "Attaque potentielle par téléchargement de fichiers.
+                            Voici plus d'informations :\n";
+                        echo 'Voici quelques informations de débogage :';
+                        print_r($_FILES);
+                    }
+
+                    // Pour la database: on enregistre le chemin de l'image
+                    $Photo = $uploadfile;
+
+                    // Connection database
                     $database = "ecebay";
 
                     if($nom&&$Description&&$Categorie&&$Prix&&$type&&$Photo)
@@ -89,9 +117,10 @@
                     }
                 }
         ?>
+
     <!--FORMULAIRE D'AJOUT-->
     <div class="container">
-        <form action="" method="POST">
+        <form enctype="multipart/form-data" action="" method="POST">
             <div class="form-group">
                 <label for="nomitem">Nom</label>
                 <input type="text" class="form-control" name="nomitem" aria-describedby="AideNom"
@@ -125,8 +154,9 @@
                 </select>
             </div>
             <div class="form-group">
+                <input type="hidden" name="MAX_FILE_SIZE" value="300000" />
                 <label for="Photoitem">Photo de l'article</label>
-                <input type="file" class="form-control-file" name="Photoitem">
+                <input type="file" class="form-control-file" name="Photoitem" accept=".jpg, .jpeg, .png">
             </div>
             <div class="form-check">
                 <input type="checkbox" class="form-check-input" name="Check1">
@@ -136,6 +166,7 @@
         </form>
     </div>
 
+    <!-- Traitement modifier ou supprimer -->
     <?php
 
             
@@ -187,77 +218,106 @@
                 if ($db_found) 
                 {
 
-                $id=$_GET['id'];
-                
-                $sql3="SELECT * FROM item WHERE NumeroID='$id' ";
-                $result3 = mysqli_query($db_handle, $sql3);
-                $data = mysqli_fetch_assoc($result3);
+                    $id=$_GET['id'];
+                    
+                    $sql3="SELECT * FROM item WHERE NumeroID='$id' ";
+                    $result3 = mysqli_query($db_handle, $sql3);
+                    $data = mysqli_fetch_assoc($result3);
                
                 }
 
                 ?>
-    <div class="container">
-        <form action="" method="POST">
-            <div class="form-group">
-                <label for="nomitem">Nom</label>
-                <input type="text" class="form-control" name="nomitem" aria-describedby="AideNom"
-                    value="<?php echo $data["Nom"];?>">
-                <small id="AideNom" class="form-text text-muted">Le nom de l'article mis en vente</small>
-            </div>
-            <div class="form-group">
-                <label for="Descriptionitem">Description</label>
-                <textarea class="form-control" name="Descriptionitem"><?php echo $data["Description"];?> </textarea>
-            </div>
+                    <div class="container">
+                        <form enctype="multipart/form-data" action="" method="POST">
+                            <div class="form-group">
+                                <label for="nomitem">Nom</label>
+                                <input type="text" class="form-control" name="nomitem" aria-describedby="AideNom"
+                                    value="<?php echo $data["Nom"];?>">
+                                <small id="AideNom" class="form-text text-muted">Le nom de l'article mis en vente</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="Descriptionitem">Description</label>
+                                <textarea class="form-control" name="Descriptionitem"><?php echo $data["Description"];?> </textarea>
+                            </div>
 
-            <div class="form-group">
-                <label for="Prixitem">Prix</label>
-                <input type="text" class="form-control" name="Prixitem" value="<?php echo $data["Prix"];?>">
-            </div>
-            <div class="form-group">
-                <label for="Categorieitem">Catégorie: <?php echo $data["Categorie"];?> </label>
+                            <div class="form-group">
+                                <label for="Prixitem">Prix</label>
+                                <input type="text" class="form-control" name="Prixitem" value="<?php echo $data["Prix"];?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="Categorieitem">Catégorie: <?php echo $data["Categorie"];?> </label>
 
-                <select id="Categorieitem" name="Categorieitem" value="<?php echo $data["Categorie"];?>">
-                    <option value="Feraille ou Or">Feraille ou Or</option>
-                    <option value="bon pour Musé">Bon pour le musé</option>
-                    <option value="Accesoire VIP">Accessoire VIP</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="typevente">Type de vente : <?php echo $data["TypeVente"];?> </label>
-                <select id="typevente" name="typevente">
-                    <?php echo $data["TypeVente"];?>"
-                    <option value="Enchere">Enchère</option>
-                    <option value="Meilleure Offre">Meilleure Offre</option>
-                    <option value="Achat direct">Achat immédiat</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="Photoitem">Photo de l'article</label>
-                <input type="file" class="form-control-file" name="Photoitem">
-            </div>
+                                <select id="Categorieitem" name="Categorieitem" value="<?php echo $data["Categorie"];?>">
+                                    <option value="Feraille ou Or">Feraille ou Or</option>
+                                    <option value="bon pour Musé">Bon pour le musé</option>
+                                    <option value="Accesoire VIP">Accessoire VIP</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="typevente">Type de vente : <?php echo $data["TypeVente"];?> </label>
+                                <select id="typevente" name="typevente">
+                                    <?php echo $data["TypeVente"];?>"
+                                    <option value="Enchere">Enchère</option>
+                                    <option value="Meilleure Offre">Meilleure Offre</option>
+                                    <option value="Achat direct">Achat immédiat</option>
+                                </select>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="customCheck1" name="modImg">
+                                <label class="custom-control-label" for="customCheck1" id="modifierImage">Modifier l'image de l'article</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="hidden" name="MAX_FILE_SIZE" value="300000" />
+                                <label for="PhotoitemR">Photo de l'article</label>
+                                <input type="file" class="form-control-file" name="PhotoitemR" id="champModifierImage" disabled>
+                            </div>
 
-            <button type="submit" class="btn btn-primary" name="modif" value='Modifier'>Modifier</button>
-        </form>
-    </div>
+                            <button type="submit" class="btn btn-primary" name="modif" value='Modifier'>Modifier</button>
+                        </form>
+                    </div>
 
 
 
     <?php
                      if(isset($_POST['modif'])){
-                    $nom = $_POST["nomitem"];
-                    $Description =$_POST["Descriptionitem"];
-                    $Categorie= $_POST["Categorieitem"];
-                    $Prix = $_POST["Prixitem"];
-                    $type = $_POST["typevente"];
-                    $Photo = $_POST["Photoitem"];
+                        $nom = $_POST["nomitem"];
+                        $Description =$_POST["Descriptionitem"];
+                        $Categorie= $_POST["Categorieitem"];
+                        $Prix = $_POST["Prixitem"];
+                        $type = $_POST["typevente"];
+                        if (isset($_POST["modImg"]))// Si on a modifié la photo (case cochée): on la télécharge à nouveau
+                        {
+                            // Pour le chargement de l'image
+                            $uploaddir = 'Images/Ventes/'; // Chemin où les images seront enregistrées sur wamp
+                            $uploadfile = $uploaddir . basename($_FILES['PhotoitemR']['name']);
 
-                    echo"submit ok   - ";
-                    
-                    $sql4="UPDATE item SET Nom='$nom',Categorie='$Categorie',Description='$Description',Prix='$Prix',TypeVente='$type',Image='$Photo' WHERE NumeroID='$id'";
-                    $result4 = mysqli_query($db_handle, $sql4);
-                    if($result4){
-                        echo"requete OK";
-                    }
+                            
+                            if (move_uploaded_file($_FILES['PhotoitemR']['tmp_name'], $uploadfile)) {
+                                echo "Le fichier est valide, et a été téléchargé
+                                    avec succès. Voici plus d'informations :\n";
+                            } else {
+                                echo "Attaque potentielle par téléchargement de fichiers.
+                                    Voici plus d'informations :\n";
+                                echo 'Voici quelques informations de débogage :';
+                                print_r($_FILES);
+                            }
+
+                            // Pour la database: on enregistre le chemin de l'image
+                            $Photo = $uploadfile;
+                        }
+
+                        else // Si on ne l'a pas modifié : on garde la valeur actuelle dans la BDD
+                        {
+                            $Photo = $data["Image"];
+                        }
+
+                        echo"submit ok   - ";
+                        
+                        $sql4="UPDATE item SET Nom='$nom',Categorie='$Categorie',Description='$Description',Prix='$Prix',TypeVente='$type',Image='$Photo' WHERE NumeroID='$id'";
+                        $result4 = mysqli_query($db_handle, $sql4);
+                        if($result4){
+                            echo"requete OK";
+                        }
 
                 }
 

@@ -129,7 +129,8 @@
                             </div>
 
                             <?php
-                                if ($_SESSION["statut"]=="administrateur") // Seul un admin peut créer un compte admin
+                                $statut = isset($_SESSION["statut"])?$_SESSION["statut"]:" ";
+                                if ($statut=="administrateur") // Seul un admin peut créer un compte admin
                                 {
                                     ?>
                                         <div class="form-check">

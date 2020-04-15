@@ -67,8 +67,9 @@
 
             if ($result)
             {
-                 // Ouverture de session si ce n'est pas un ajout par admin
-                if ($_SESSION["statut"] != "administrateur")
+                $statut = isset($_SESSION["statut"])?$_SESSION["statut"]:" ";
+                // Ouverture de session si ce n'est pas un ajout par admin
+                if ($statut != "administrateur")
                 {
                     $_SESSION["login"]=$login;
                     $_SESSION["nom"] = $nom;
