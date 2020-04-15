@@ -56,7 +56,7 @@
         
         // S'il n'y a pas d'erreur : on affiche un message de succès
         // On ajoute dans la BDD le nouvel utilisateur
-        // on ouvre une session et on redirige vers la page d'accueil
+        // on ouvre une session et on redirige vers la page d'accueil (sauf si ajout par admin)
         if ($error == false)
         {
             // Ajout dans la BDD
@@ -65,17 +65,21 @@
 
             $result = mysqli_query($db_handle, $sql);
 
-            // Ouverture de session
             if ($result)
             {
-                 $_SESSION["login"]=$login;
-                 $_SESSION["nom"] = $nom;
-                 $_SESSION["statut"] = $statut;
- 
-    
-
-                // Redirection
-                ?> <meta http-equiv="refresh" content="0; url=accueil.php?alertCode=2"> <?php
+                 // Ouverture de session si ce n'est pas un ajout par admin
+                if ($_SESSION["statut"] != "administrateur")
+                {
+                    $_SESSION["login"]=$login;
+                    $_SESSION["nom"] = $nom;
+                    $_SESSION["statut"] = $statut;
+                   // Redirection
+                   ?> <meta http-equiv="refresh" content="0; url=accueil.php?alertCode=2"> <?php
+                }
+                else  // ajout par admin
+                {
+                    ?> <meta http-equiv="refresh" content="0; url=admin_gerer_comptes.php?alertCode=4"> <?php
+                }
             }
             else
             {

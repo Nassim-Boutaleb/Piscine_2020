@@ -11,7 +11,19 @@
     <link href="login.css" rel="stylesheet" type="text/css"/> 
     <?php
         // Se connecter à la BDD pour récupérer les informations à afficher
-        $login = $_SESSION["login"];  // qui est connecté ?
+        // Si c'est l'admin qui modifie le compte
+        if ($_SESSION["statut"] == "administrateur")
+        {
+            $login = isset($_POST["AGMod"])?$_POST["AGMod"] : "UNDEFINED" ;  // qui on veut modifier ?
+            if ($login == "UNDEFINED") // ça veut dire qu'on est redirirgé depuis la page de traitements car on a eu une erreur
+            {
+                $login = isset($_POST["erreurAncienLogin"])?$_POST["erreurAncienLogin"] : " " ;
+            }
+        }
+        else
+        {
+            $login = $_SESSION["login"];  // qui est connecté ?
+        }
 
         //identifier le nom de base de données 
         $database = "ecebay"; 
@@ -224,7 +236,8 @@
                       </fieldset>
                     
                     <button class="btn btn-secondary" id="modifierBtn">Modifier mes informations</button>
-                </div>
+                </div> <!-- fin div card-body -->
+                <input type="hidden" name="ancienLogin" value="<?php echo ($login); ?>">
 
             </form>
         </div>

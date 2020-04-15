@@ -118,11 +118,16 @@
             <!-- MENU DESCENDANT-->
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="Categories" role="button" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false"> Catégories</a>
+                    aria-haspopup="true" aria-expanded="false"> Catalogue</a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">Ferraille ou Trésor</a>
-                    <a class="dropdown-item" href="#">Bon pour le Musée</a>
-                    <a class="dropdown-item" href="#">Accessoire VIP</a>
+                    <a class="dropdown-item" href="CatalogueFerOr.php">Ferraille ou Trésor</a>
+                    <a class="dropdown-item" href="CatalogueMuse.php">Bon pour le Musée</a>
+                    <a class="dropdown-item" href="CatalogueVIP.php">Accessoire VIP
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="catalogue.php">Catalogue complet
+                    </a>
+
                 </div>
 
             </li>
