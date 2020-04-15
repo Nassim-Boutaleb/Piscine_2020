@@ -17,7 +17,12 @@
             $login = isset($_POST["AGMod"])?$_POST["AGMod"] : "UNDEFINED" ;  // qui on veut modifier ?
             if ($login == "UNDEFINED") // ça veut dire qu'on est redirirgé depuis la page de traitements car on a eu une erreur
             {
-                $login = isset($_POST["erreurAncienLogin"])?$_POST["erreurAncienLogin"] : " " ;
+                $login = isset($_POST["erreurAncienLogin"])?$_POST["erreurAncienLogin"] : "UNDEFINED" ;
+
+                if ($login == "UNDEFINED") // ça veut dire que l'admin veut ses infos à lui (il est arrivé par la navbar)
+                {
+                    $login = $_SESSION["login"];  // qui est connecté ?
+                }
             }
         }
         else
