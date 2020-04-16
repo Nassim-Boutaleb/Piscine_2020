@@ -12,6 +12,12 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
 
+    <style>
+        #finEnchere {
+            display: none;
+        }
+    </style>
+
     <script type="text/javascript">
     $(document).ready(function() {
         $("#modifierImage").on("click",function(){  // Cliquer sur l'encoche modifier image= activer le champ
@@ -24,7 +30,19 @@
             {
                 $("#champModifierImage").prop("disabled", true).trigger("click");
             }
-        });   
+        });
+
+        $("#typevente").on("click",function(){
+            if (document.getElementById("typevente").selectedIndex == 0)
+            {
+                $("#finEnchere").slideDown();
+            }
+            else
+            {
+                $("#finEnchere").slideUp();
+            }
+        });
+
     });
     </script>
 
@@ -103,13 +121,53 @@
                         $db_found = mysqli_select_db($db_handle, $database); 
                         if ($db_found) 
                         { 
+                            // Ajouter l'itam à la table item
                             $sql="INSERT INTO item (Nom,Categorie,Description,Prix,TypeVente,Image,vendeur) VALUES ('$nom','$Categorie','$Description','$Prix','$type','$Photo','$vendeur')";
                             $result = mysqli_query($db_handle, $sql);
 
                             if($result)
                             {                              
-                                echo"Article ajouté";
-                                header("refresh:2, url=Gestionitem.php");
+                                // Si c'est une enchère: ajouter l'item aussi dans la table des enchères
+                                if ($type == "Enchere")
+                                {
+                                    // Il faut d'abord récupérer son id créé automatiquement par sql en auto-increment...
+                                    // Vu qu'on fait un auto-inrement, on récupéère l'ID le + élevé = c'est l'id du dernier item ajouté
+                                    $sqlE="SELECT MAX(NumeroID) AS maxIdItem FROM item ";
+                                    $resultE = mysqli_query($db_handle, $sqlE);
+                                    $dataE = mysqli_fetch_assoc($resultE);
+                                    $numeroIDItem = $dataE["maxIdItem"];
+
+                                    
+                                    /*$dateAjout = time();  // timestamp de l'ajout
+                                    $dureeSecondes = 2*60*60;      //Disons 2heures // $_POST["typevente"]; pour récup valeur utilisateur une fois mis en place 
+
+                                    $timestamp = date("Y-m-d H:i:s"); */
+
+                                    $dateFin = date('Y-m-d', strtotime($_POST['dateFinEnchere']));
+                                    $heureFin=date('H:i:00', strtotime($_POST['timeFinEnchere']));
+                                    $dateHeureFin = $dateFin." ".$heureFin;
+
+                                    echo("DR: $dateFin; HR: $heureFin, MM: $dateHeureFin, MAX:$numeroIDItem");
+                                    
+
+                                    $sqlE="INSERT INTO enchere (IdItem,dateDebut,dateFin) VALUES ('$numeroIDItem',NOW(),'$dateHeureFin')";
+                                    $resultE = mysqli_query($db_handle, $sqlE);
+                                    if ($resultE)
+                                    {
+                                        echo"Article ajouté";
+                                        header("refresh:2, url=Gestionitem.php");
+                                    }
+                                    else
+                                    {
+                                        echo"Erreur ajout enchère";
+                                    }
+                                }
+                                else 
+                                {
+                                    echo"Article ajouté";
+                                    header("refresh:2, url=Gestionitem.php");
+                                }
+                                
                             }
                             else
                             {
@@ -162,6 +220,16 @@
                     <option value="Meilleure Offre">Meilleure Offre</option>
                     <option value="Achat direct">Achat immédiat</option>
                 </select>
+            </div>
+            <div class="form-row" id="finEnchere" >
+                <div class="form-row col-md-4" >
+                    <label for="dateFinEnchere">Date de fin de l'enchère</label>
+                    <input type="date" class="form-control" id="dateFinEnchere" name="dateFinEnchere">
+                </div>
+                <div class="form-row col-md-4" >
+                    <label for="timeFinEnchere">Heure de fin de l'enchère</label>
+                    <input type="time" class="form-control" id="timeFinEnchere" name="timeFinEnchere">
+                </div>
             </div>
             <div class="form-group">
                 <input type="hidden" name="MAX_FILE_SIZE" value="300000" />

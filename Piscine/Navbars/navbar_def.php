@@ -133,7 +133,7 @@
             </li>
             <!--FIN MENU DESCENDANT-->
             <span class="d-inline-block" id="ppvAcheter" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous avec un compte acheteur pour accéder à la page des achats">
-                <li class="nav-item"><a class="nav-link" href="login.php" id="Acheter">Acheter</a></li>
+                <li class="nav-item"><a class="nav-link" href="achat.php" id="Acheter">Acheter</a></li>
             </span>
             <span class="d-inline-block" id="ppvVendre" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous avec un compte vendeur pour accéder à la page des ventes">
                 <li class="nav-item"><a class="nav-link" href="Gestionitem.php"  id="Vendre">Vendre</a></li>

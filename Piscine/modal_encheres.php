@@ -29,9 +29,16 @@
 ?>
 <script>
         $(document).ready(function() {
-            $dispAuto =false;
             $("#enchereAutoCheckbox").on("click",function(){  // Cliquer sur l'encoche encheres auto pour dévoiler le champ du montant max
-                $("#enchereAutoForm").slideDown();
+                if (document.getElementById("enchereAutoCheckbox").checked)
+                {
+                    $("#enchereAutoForm").slideDown();
+                }
+                else
+                {
+                    $("#enchereAutoForm").slideUp();
+
+                }
             });   
         });
 </script>
