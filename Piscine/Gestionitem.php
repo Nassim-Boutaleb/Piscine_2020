@@ -27,6 +27,15 @@
         });   
     });
     </script>
+
+    <!-- Empecher l'accès à la page si on est pas vendeur (blindage côté serveur) -->
+    <?php 
+        if ($_SESSION["statut"] != "administrateur" && $_SESSION["statut"] != "vendeur" )
+        {
+            echo("ERREUR PAS DE DROIT D'ACCES ! REDIRECTION EN COURS");
+            ?> <meta http-equiv="refresh" content="0; url=accueil.php?alertCode=3"> <?php
+        }
+    ?>
 </head>
 
 <body>
@@ -64,6 +73,7 @@
                     $Categorie= $_POST["Categorieitem"];
                     $Prix = $_POST["Prixitem"];
                     $type = $_POST["typevente"];
+                    $vendeur = $_SESSION["login"];
                     
                     // Pour le chargement de l'image
                     $uploaddir = 'Images/Ventes/'; // Chemin où les images seront enregistrées sur wamp
@@ -93,7 +103,7 @@
                         $db_found = mysqli_select_db($db_handle, $database); 
                         if ($db_found) 
                         { 
-                            $sql="INSERT INTO item (Nom,Categorie,Description,Prix,TypeVente,Image) VALUES ('$nom','$Categorie','$Description','$Prix','$type','$Photo')";
+                            $sql="INSERT INTO item (Nom,Categorie,Description,Prix,TypeVente,Image,vendeur) VALUES ('$nom','$Categorie','$Description','$Prix','$type','$Photo','$vendeur')";
                             $result = mysqli_query($db_handle, $sql);
 
                             if($result)
@@ -176,10 +186,11 @@
 
                 
                 $db_handle = mysqli_connect('localhost', 'root', 'root'); 
-                $db_found = mysqli_select_db($db_handle, $database); 
+                $db_found = mysqli_select_db($db_handle, $database);
+                $vendeur = $_SESSION["login"]; 
                 { 
                     
-                $sql="SELECT * FROM item";
+                $sql="SELECT * FROM item WHERE vendeur='$vendeur' ";
 
                 $result = mysqli_query($db_handle, $sql);
 

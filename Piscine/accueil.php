@@ -33,6 +33,12 @@
                   $("#Alerte").slideDown();
                 }
 
+                if (alertCode == 3) // erreur de droit d'accès
+                {
+                  $("#texteAlerteD").text("ERREUR DROIT D'ACCES");
+                  $("#AlerteD").slideDown();
+                }
+
             }); 
         </script>
 
@@ -49,6 +55,13 @@
         <!-- Fenetres d'alertes -->
         <div class="alert alert-warning alert-dismissible fade show" role="alert" id="Alerte">
           <strong id="texteAlerte"></strong> 
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="AlerteD">
+          <strong id="texteAlerteD"></strong> 
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
