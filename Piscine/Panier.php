@@ -70,7 +70,7 @@
                 <p>Type de vente : <?php echo $data["TypeVente"];?></p>
                 <p>Catégorie : <?php echo $data["Categorie"];?></p>            
             <br>
-            <button class="btn btn-secondary"><a href="?action=Supprimer&amp;id=<?php echo $data3["NumeroID"];?>"> Supprimer
+            <button class="btn btn-secondary"><a href="?action=Supprimer&amp;id=<?php echo $data["NumeroID"];?>"> Supprimer
         </a></button>
             <?php
                         if(isset($_GET['action'])){
@@ -112,7 +112,7 @@
                 <p>Type de vente : <?php echo $data2["TypeVente"];?></p>
                 <p>Catégorie : <?php echo $data2["Categorie"];?></p>            
             <br>
-            <button class="btn btn-secondary"><a href="?action=Supprimer&amp;id=<?php echo $data3["NumeroID"];?>"> Supprimer
+            <button class="btn btn-secondary"><a href="?action=Supprimer&amp;id=<?php echo $data2["NumeroID"];?>"> Supprimer
         </a></button>
             <?php
                         if(isset($_GET['action'])){
