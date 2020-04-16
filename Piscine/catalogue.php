@@ -8,8 +8,13 @@
          <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"> 
         <link rel="stylesheet" type="text/css" href="styles.css"> 
 
+<<<<<<< HEAD
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>  
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script> 
+=======
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>  
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script> 
+>>>>>>> develop
 
         
         
@@ -129,6 +134,12 @@
 
             while ($data = mysqli_fetch_assoc($result))
             {
+<<<<<<< HEAD
+=======
+                //Sauvegarder les variables 
+                $nomItem = $data["Nom"];
+                $idItem = $data["NumeroID"];
+>>>>>>> develop
                 ?>
 
                 
@@ -143,10 +154,29 @@
             
                 if ($statut == "acheteur")
                 {
+<<<<<<< HEAD
                     ?>
                     
                     <a href="?action=ajouterpanier&amp;id=<?php echo $data["NumeroID"];?> ">Ajouter au panier</a>
 
+=======
+                    if ($data["TypeVente"] == "Enchere") // Si c'est une enchere alors pop up
+                    {
+                        ?><button type="submit" name="enchere" value="<?php echo($data["NumeroID"]); ?>" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#enchereID<?php echo($data["NumeroID"]); ?>">Enchérir</button>
+                            <div class="modal fade" id="enchereID<?php echo($data["NumeroID"]); ?>" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <?php require ("modal_encheres.php"); ?>
+                            </div>
+                        <?php
+                    }
+                    else 
+                    {
+                        ?>
+                            <a href="?action=ajouterpanier&amp;id=<?php echo $data["NumeroID"];?> ">Ajouter au panier</a>
+                        <?php
+                    }
+                    ?>
+                    
+>>>>>>> develop
 
                     <?php
                         

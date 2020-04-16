@@ -1,8 +1,13 @@
 .card {
     margin: 60px auto;
-    width: 60%;
+    width: 90%;
 }
 
 body {
     background-color: lightcyan;
+}
+
+/** Masquer les alertes */
+.alert {
+    display: none;
 }

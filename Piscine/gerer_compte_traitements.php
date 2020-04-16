@@ -16,8 +16,14 @@
     $tel = isset($_POST["tel"])?$_POST["tel"] : "" ;
     $statut = isset($_POST["statut"])?$_POST["statut"] : "" ;
     
-
-    $ancienLogin = $_SESSION["login"];
+    if ($_SESSION["statut"] == "administrateur")
+    {
+        $ancienLogin = isset($_POST["ancienLogin"])?$_POST["ancienLogin"] : "" ;
+    }
+    else
+    {
+        $ancienLogin = $_SESSION["login"];
+    }
 
     // Vérifier que le login entré n'existe pas déjà dans la BDD
 
@@ -32,8 +38,8 @@
 	//si le BDD existe, faire le traitement 
 	if ($db_found) { 
         
-        // Regarder si le login a changé en comparant la valeur du formulaire avec celle de la session
-        if ($login != $_SESSION["login"])
+        // Regarder si le login a changé en comparant la valeur du formulaire avec l'ancien login
+        if ($login != $ancienLogin)
         {
             // Vérifier que le nouveau login n'existe pas déjà
             $sql = "SELECT login FROM utilisateur ";  // on regarde tous les login
@@ -47,15 +53,15 @@
                     $error = 1;
                     echo ("ERREUR LOGIN");
                     ?>
-
-                    <!-- Formulaire qui va transmettre à la page de modif de compte l'erreur. Il est envoyé automatiquement
-                    par un script javascript -->
-                    <form method="post" action="gerer_compte.php" id="erreurF">
-                        <input type="hidden" name="erreursCreation" value="<?php echo($error) ?>">
-                    </form>
-                    <script> 
-                    document.getElementById("erreurF").submit(); // soumission du formulaire = redirection vers creer_compte.php
-                    </script>
+                        <!-- Formulaire qui va transmettre à la page de modif de compte l'erreur. Il est envoyé automatiquement
+                        par un script javascript -->
+                        <form method="post" action="gerer_compte.php" id="erreurF">
+                            <input type="hidden" name="erreursCreation" value="<?php echo($error) ?>">
+                            <input type="hidden" name="erreurAncienLogin" value="<?php echo($ancienLogin) ?>">
+                        </form>
+                        <script> 
+                        document.getElementById("erreurF").submit(); // soumission du formulaire = redirection vers creer_compte.php
+                        </script>
                     <?php
                 }
             }  
@@ -72,18 +78,21 @@
 
             $result = mysqli_query($db_handle, $sql);
 
-            // mise a jour de session
+            // mise a jour de session (si ce n'est pas une modif faite par l'admin)
             if ($result)
             {
-                 $_SESSION["login"]=$login;
-                 $_SESSION["nom"] = $nom;
-                 $_SESSION["statut"] = $statut;
- 
-                // Message de succès
-                ?> <script> alert("Connexion succès"); </script> <?php
-
-                // Redirection
-                ?> <meta http-equiv="refresh" content="0; url=gerer_compte.php"> <?php
+                if ($_SESSION["statut"] != "administrateur")
+                {
+                    $_SESSION["login"]=$login;
+                    $_SESSION["nom"] = $nom;
+                    $_SESSION["statut"] = $statut;
+                    // Redirection
+                    ?> <meta http-equiv="refresh" content="0; url=gerer_compte.php"> <?php
+                }
+                else if ($_SESSION["statut"] == "administrateur")
+                {
+                    ?> <meta http-equiv="refresh" content="0; url=admin_gerer_comptes.php?alertCode=3"> <?php
+                }
             }
             else
             {

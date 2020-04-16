@@ -112,7 +112,11 @@
                 <p>Type de vente : <?php echo $data2["TypeVente"];?></p>
                 <p>Catégorie : <?php echo $data2["Categorie"];?></p>            
             <br>
+<<<<<<< HEAD
             <button class="btn btn-secondary"><a href="?action=Supprimer&amp;id=<?php echo $data2["NumeroID"];?>"> Supprimer
+=======
+            <button class="btn btn-secondary"><a href="?action=Supprimer&amp;id=<?php echo $data3["NumeroID"];?>"> Supprimer
+>>>>>>> develop
         </a></button>
             <?php
                         if(isset($_GET['action'])){

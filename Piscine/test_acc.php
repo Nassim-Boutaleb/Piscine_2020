@@ -7,19 +7,43 @@
     <title>Document</title>
 </head>
 <body>
-    <a href="login.php"><button>Se connecter</button></a>
-    <form method="post" action="deconnexion.php">
-        <input type="submit" value="se déconnecter">
-    </form>
-    
-    <?php
-        if (isset($_SESSION["login"])){
-            echo ('<h3> Bienvuenue '.$_SESSION["login"].' </h3>');
+
+<form enctype="multipart/form-data" action="" method="post">
+    <div class="form-group">
+        <!-- MAX_FILE_SIZE doit précéder le champ input de type file -->
+        <input type="hidden" name="MAX_FILE_SIZE" value="300000" />
+        <label for="Photoitem">Photo de l'article</label>
+        <input type="file" class="form-control-file" name="Photoitem" accept=".jpg, .jpeg, .png">
+        <button type="submit" class="btn btn-primary" name='submit'>Soumettre</button>
+    </div>
+</form>
+
+<?php
+    if(isset($_POST['submit']))  
+    {
+        echo ("Allo");
+        $uploaddir = 'Images/Ventes/';
+        $uploadfile = $uploaddir . basename($_FILES['Photoitem']['name']);
+
+        echo '<pre>';
+        if (move_uploaded_file($_FILES['Photoitem']['tmp_name'], $uploadfile)) {
+            echo "Le fichier est valide, et a été téléchargé
+                avec succès. Voici plus d'informations :\n";
+        } else {
+            echo "Attaque potentielle par téléchargement de fichiers.
+                Voici plus d'informations :\n";
         }
-        else
-        {
-            echo ("<h3> Pas encore connecté </h3>");
-        }
-    ?>
+
+        echo 'Voici quelques informations de débogage :';
+        print_r($_FILES);
+
+        echo '</pre>'; 
+
+        echo("Chemin du fichier: ".$uploadfile);
+    }
+
+?>
+    <img src="<?php echo($uploadfile); ?>">
+
 </body>
 </html>

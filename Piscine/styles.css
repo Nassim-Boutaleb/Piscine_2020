@@ -1,12 +1,8 @@
 body {   
     padding: 0px;  
     margin: 0px;   
-    background: #AAE1E2; 
+    background:#ADD8E6;
 } 
-
-
-
-
 
 
 /** Header */
@@ -111,6 +107,12 @@ body {
     min-height:200px;
 
 }
+
+/** Masquer les alertes */
+.alert {
+    display: none;
+}
+
 
 @media (max-width: 575.98px) 
 { 
