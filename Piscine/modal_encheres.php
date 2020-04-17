@@ -18,7 +18,7 @@
             $newEnchere = true; // Pour les affichages
 
         }
-        else // Si une offre a déja été faite
+        else // Si une offre a déja été faite 
         {
             $newEnchere = false;
             while ($data2 = mysqli_fetch_assoc($result2)) {   
@@ -26,6 +26,10 @@
                 echo ("R:".$data2["meilleureOffre"]);
             }
         }
+
+        // Récupérer l'id de l'enchere
+        //...
+
 ?>
 <script>
         $(document).ready(function() {
@@ -54,7 +58,7 @@
         </div>
 
         <div class="modal-body">
-            <?php echo($data["NumeroID"]); ?>
+            <?php echo($idItem); ?>
             <?php 
                 if ($newEnchere == true)
                 {
@@ -72,25 +76,26 @@
             <form method="post" action="modal_encheres_traitements.php">
                 <div class="form-group">
                     <label for="enchereMontant">Faire une enchère</label>
-                    <input type="number" class="form-control" id="enchereMontant" aria-describedby="enchere" >
+                    <input type="number" class="form-control" id="enchereMontant" aria-describedby="enchere" name="montantEnchere" >
                     <small id="enchereMontantHelp" class="form-text text-muted">Une enchère en € qui doit être supérieure au prix de départ</small>
                 </div>
                 <div class="form-group form-check">
-                    <input type="checkbox" class="form-check-input" id="enchereAutoCheckbox">
+                    <input type="checkbox" class="form-check-input" id="enchereAutoCheckbox" name="enchereAutoCheckbox">
                     <label class="form-check-label" for="exampleCheck1">Activer les enchères automatiques</label>
                 </div>
                 <div class="form-group" id="enchereAutoForm">
                     <label for="enchereAutoMontant">Monant maximal</label>
-                    <input type="number" class="form-control" id="enchereAutoMontant">
+                    <input type="number" class="form-control" id="enchereAutoMontant" name="autoMax">
                     <small id="enchereAutoMontantHelp" class="form-text text-muted">Le site va enchérir automatiquement pour vous, sans dépasser votre montant maximal</small>
                 </div>
-                <button type="submit" class="btn btn-secondary">Démarer les enchères</button> 
+                <input type="hidden" name="idItem" value=<?php echo($idItem); ?> >
+                <button type="submit" class="btn btn-success">Démarer les enchères</button> 
             </form>
         </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Understood</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+            <a href="#"><button type="button" class="btn btn-info">Aide et mentions légales</button></a>
         </div>
     </div>
 </div>
