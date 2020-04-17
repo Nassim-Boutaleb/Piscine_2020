@@ -26,7 +26,7 @@
 
        
             <blockquote class="blockquote text-center">
-                <p class="mb-0">BON POUR LE MUSE</p>
+                <p class="mb-0">Enchères en cours</p>
                 <footer class="blockquote-footer">Une selection d'articles hors du commun </footer>
             </blockquote>
 <?php
@@ -129,7 +129,7 @@
         if ($db_found) 
         {
             
-            $sql="SELECT * FROM item WHERE Categorie='Bon pour Muse'";          $result = mysqli_query($db_handle, $sql);
+            $sql="SELECT * FROM item WHERE TypeVente='Meilleure Offre'";           $result = mysqli_query($db_handle, $sql);
 
             while ($data = mysqli_fetch_assoc($result))
             {
@@ -199,25 +199,14 @@
                         else
                         {
                             echo"L'article  est déja dans le panier";
+                        }    
                         }
-                            
-                        
-                        }
-
                     }
-  
-
-
         }
-
-
-        ?>
-                   
-              
+        ?>             
     </div>
-    
     </body>
-    
+
     <footer>
         <?php require("Footer.php");  ?>
     </footer>

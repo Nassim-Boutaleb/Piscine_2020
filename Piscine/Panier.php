@@ -10,10 +10,33 @@
         <link rel="stylesheet" type="text/css" href="styles.css"> 
         <link rel="stylesheet" type="text/css" href="panier.css"> 
 
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>  
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script> 
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>  
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script> 
+        <?php
+         $alertCode2 = isset($_GET["alertCode2"])?$_GET["alertCode2"] : "0" ; 
+        ?>
 
-         
+        <script type="text/javascript">      
+            $(document).ready(function(){           
+                $('.header').height($(window).height());  // Taille du header = taille totale de l'écran 
+
+                // affichage d'une alerte pour la déconnexion
+                var alertCode2 = <?php echo($alertCode2); ?>;
+                if (alertCode2 == 1) // on affiche le succès de déconnexion
+                {
+                  $("#texteAlerte2").text("l'article a été supprimé");
+                  $("#Alerte2").slideDown();
+                }
+
+                if (alertCode2 == 2) // on affiche le succès de création de compte
+                {
+                  $("#texteAlerteD2").text("l'article n'a pas pu être supprimé");
+                  $("#AlerteD2").slideDown();
+                }
+
+                
+            }); 
+        </script>
     </head> 
     
     <body> 
@@ -22,6 +45,21 @@
 
         <!-- Navbar (barre de navigation)-->
         <?php require("Navbars/navbar_def.php");  ?>
+
+        <div class="alert alert-warning alert-dismissible fade show" role="alert" id="Alerte2">
+          <strong id="texteAlerte2"></strong> 
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="AlerteD2">
+          <strong id="texteAlerteD2"></strong> 
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
         <!--PHP Panier-->
 
    <?php 
@@ -40,6 +78,8 @@
    ?>     
 
 <!--Panier-->
+
+
 
 <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item">
@@ -64,13 +104,22 @@
                 ?>
 
                 
-                <h2><?php echo $data["Nom"]."  ";?></h2>
-                <p>Prix : <?php echo $data["Prix"];?> €</p>
-                <p id="descriptionitem">Description : <?php echo $data["Description"];?></p>
-                <p>Type de vente : <?php echo $data["TypeVente"];?></p>
-                <p>Catégorie : <?php echo $data["Categorie"];?></p>            
-            <br>
-            <button class="btn btn-secondary"><a href="?action=Supprimer&amp;id=<?php echo $data["NumeroID"];?>"> Supprimer
+                <div class="container" id="affarticle">
+                <figure class="figure">
+                    <img src="<?php echo $data["Image"];?>" alt="Photo Article" width="400" height="300" class="figure-img img-fluid img-thumbnail rounded">
+                    <figcaption class="figure-caption float-right">
+                        <h2><?php echo $data["Nom"]."  ";?></h2>
+                    <p>Prix : <?php echo $data["Prix"];?>€</p>
+                
+                    <p>Type de vente : <?php echo $data["TypeVente"];?></p>
+                    <p>Catégorie : <?php echo $data["Categorie"];?></p> 
+                    
+                    </figcaption>
+                </figure>              
+                <br>
+                </div>   
+                <br>
+                <button class="btn btn-outline-primary"><a href="?action=Supprimer&amp;id=<?php echo $data["NumeroID"];?>"> Supprimer
         </a></button>
             <?php
                         if(isset($_GET['action'])){
@@ -79,10 +128,13 @@
                 $NumID=$_GET['id'];
                 $sql4="DELETE FROM acheter_item WHERE NumeroIDItem='$NumID'";
                     $result4 = mysqli_query($db_handle, $sql4);
-                    if($result4){
+                    if($result4){?>
+                        <meta http-equiv="refresh" content="0; url=Panier.php?alertCode2=1"> <?php
                         echo "Article supprimé";
                     }
                     else{
+                        ?>
+                        <meta http-equiv="refresh" content="0; url=Panier.php?alertCode2=2"> <?php
                         echo "L'article n'a pas pu être supprimé";
                     }
             }
@@ -95,6 +147,7 @@
 
       ?>
   </div>
+
   <div class="tab-pane fade" id="offre" role="tabpanel" aria-labelledby="tab_offre"> 
 
      <?php 
@@ -105,14 +158,22 @@
             {
                 ?>
 
+                <div class="container" id="affarticle">
+                <figure class="figure">
+                    <img src="<?php echo $data["Image"];?>" alt="Photo Article" width="400" height="300" class="figure-img img-fluid img-thumbnail rounded">
+                    <figcaption class="figure-caption float-right">
+                        <h2><?php echo $data2["Nom"]."  ";?></h2>
+                    <p>Prix : <?php echo $data2["Prix"];?>€</p>
                 
-                <h2><?php echo $data2["Nom"]."  ";?></h2>
-                <p>Prix : <?php echo $data2["Prix"];?> €</p>
-                <p id="descriptionitem">Description : <?php echo $data2["Description"];?></p>
-                <p>Type de vente : <?php echo $data2["TypeVente"];?></p>
-                <p>Catégorie : <?php echo $data2["Categorie"];?></p>            
-            <br>
-            <button class="btn btn-secondary"><a href="?action=Supprimer&amp;id=<?php echo $data3["NumeroID"];?>"> Supprimer
+                    <p>Type de vente : <?php echo $data2["TypeVente"];?></p>
+                    <p>Catégorie : <?php echo $data2["Categorie"];?></p> 
+                    
+                    </figcaption>
+                </figure>              
+                <br>
+                </div>   
+                <br>
+                <button class="btn btn-outline-primary"><a href="?action=Supprimer&amp;id=<?php echo $data3["NumeroID"];?>"> Supprimer
         </a></button>
             <?php
                         if(isset($_GET['action'])){
@@ -122,9 +183,16 @@
                 $sql4="DELETE FROM acheter_item WHERE NumeroIDItem='$NumID'";
                     $result4 = mysqli_query($db_handle, $sql4);
                     if($result4){
+
                         echo "Article supprimé";
+                        ?>
+                        <meta http-equiv="refresh" content="1; url=Panier.php?alertCode2=1"> 
+                        <?php
                     }
                     else{
+                        ?>
+                        <meta http-equiv="refresh" content="1; url=Panier.php?alertCode2=2">
+                         <?php
                         echo "L'article n'a pas pu être supprimé";
                     }
             }
@@ -138,24 +206,35 @@
   </div>
   <div class="tab-pane fade" id="achat" role="tabpanel" aria-labelledby="tab_achat">
     <div class="container">
+                 
      <?php 
       
             $sql3="SELECT * FROM item,acheter_item WHERE loginAcheteur='$login'AND NumeroIDItem=item.NumeroID AND item.TypeVente='Achat direct' ";
             $result3 = mysqli_query($db_handle, $sql3);
-
+            $Total=0;
 
             while ($data3 = mysqli_fetch_assoc($result3))
-            {
+            {   
                 
+                $Total=$data3["Prix"]+$Total;
                 ?>
-                <h2><?php echo $data3["Nom"]."  ";?></h2>
-                <p>Prix : <?php echo $data3["Prix"];?> €</p>
-                <p id="descriptionitem">Description : <?php echo $data3["Description"];?></p>
-                <p>Type de vente : <?php echo $data3["TypeVente"];?></p>
-                <p>Catégorie : <?php echo $data3["Categorie"];?></p>            
-            <br>
-            <button class="btn btn-secondary"><a href="?action=Supprimer&amp;id=<?php echo $data3["NumeroID"];?>"> Supprimer
+               <div class="container" id="affarticle">
+                <figure class="figure">
+                    <img src="<?php echo $data3["Image"];?>" alt="Photo Article" width="200" height="100" class="figure-img img-fluid img-thumbnail rounded">
+                    <figcaption class="figure-caption float-right">
+                        <h2><?php echo $data3["Nom"]."  ";?></h2>
+                    <p>Prix : <?php echo $data3["Prix"];?>€</p>
+                
+                    <p>Type de vente : <?php echo $data3["TypeVente"];?></p>
+                    <p>Catégorie : <?php echo $data3["Categorie"];?></p> 
+                    <button class="btn btn-outline-primary"><a href="?action=Supprimer&amp;id=<?php echo $data3["NumeroID"];?>"> Supprimer
         </a></button>
+                    </figcaption>
+                </figure>              
+                <br>
+                </div>   
+                <br>
+                
             <?php
 
             if(isset($_GET['action'])){
@@ -165,25 +244,34 @@
                 $sql4="DELETE FROM acheter_item WHERE NumeroIDItem='$NumID'";
                     $result4 = mysqli_query($db_handle, $sql4);
                     if($result4){
-                        echo "Article supprimé";
+                        echo "Article supprimé";?>
+                        <meta http-equiv="refresh" content="1; url=Panier.php?alertCode2=1"> 
+                        <?php
                     }
                     else{
+                        ?>
+                        <meta http-equiv="refresh" content="1; url=Panier.php?alertCode2=2">
+                         <?php
                         echo "L'article n'a pas pu être supprimé";
                     }
             }
-        }
-        }
+        }        
+    }echo"$Total";
+
 
       
         
 
       ?>
+      <button class="btn btn-outline-primary"><a href=""> Paiement
+        </a></button>
       </div>
    </div>
 </div>
 <?php
 
 }
+
 
 ?>
     </body>

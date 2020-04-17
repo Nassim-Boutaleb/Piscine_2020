@@ -1,0 +1,35 @@
+.container-fluid{
+	background:#F5F5F5;
+
+}
+
+#affarticles{
+	margin: auto;
+	width: 150px;
+}
+
+
+img{
+	 	margin-left: auto;
+  margin-right: auto;
+}
+button{
+	margin-left: auto;
+  margin-right: auto;
+  
+}
+figcaption{
+	
+	
+}
+figure{
+	width: 650px;
+}
+
+.figure-caption{
+  
+  background:#F5F5F5;
+}
+
+
+
