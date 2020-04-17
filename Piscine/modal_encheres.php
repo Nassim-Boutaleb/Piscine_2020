@@ -9,11 +9,14 @@
         
         // On va commencer par savoir si l'enchère a déjà débuté (une offre faite) ou si 
         // elle n'a pas encore débuté (l'utilisateur va faire la 1ere offre)
-        $sql2 = "SELECT meilleureOffre FROM enchere WHERE IdItem ='$idItem'  ";  
-        $result2 = mysqli_query($db_handle, $sql2); 
+        // ATTENTION la variable $idItem doit être définie dans la page qui appelle modal_encheres.php
+
+        $sql2 = "SELECT meilleureOffre,	loginMeilleureOffre FROM enchere WHERE IdItem ='$idItem'  ";  
+        $result2 = mysqli_query($db_handle, $sql2);
+        $data2 = mysqli_fetch_assoc($result2); 
 
         
-        if (!isset($data2)) // Si aucune offre n'a encore été faite
+        if (!isset($data2["meilleureOffre"])) // Si aucune offre n'a encore été faite
         {
             $newEnchere = true; // Pour les affichages
 
@@ -21,19 +24,18 @@
         else // Si une offre a déja été faite 
         {
             $newEnchere = false;
-            while ($data2 = mysqli_fetch_assoc($result2)) {   
-        
-                echo ("R:".$data2["meilleureOffre"]);
-            }
+            $meilleureOffre = $data2["meilleureOffre"];
+            $loginMeilleureOffre = $data2["loginMeilleureOffre"];
         }
 
-        // Récupérer l'id de l'enchere
+        // Récupérer l'id de l'enchere je sais plus pourquoi j'ai mis ça !
         //...
 
 ?>
 <script>
         $(document).ready(function() {
-            $("#enchereAutoCheckbox").on("click",function(){  // Cliquer sur l'encoche encheres auto pour dévoiler le champ du montant max
+            // Cliquer sur l'encoche encheres auto pour dévoiler le champ du montant max
+            $("#enchereAutoCheckbox").on("click",function(){  
                 if (document.getElementById("enchereAutoCheckbox").checked)
                 {
                     $("#enchereAutoForm").slideDown();
@@ -41,9 +43,18 @@
                 else
                 {
                     $("#enchereAutoForm").slideUp();
-
                 }
-            });   
+            }); 
+
+            // La gestion des erreurs
+            // Les variables  php numeroIdItem et erreurEnchere sont définies dans la page qui appelle la modal
+            var erreurEnchere = <?php echo($erreurEnchere); ?>;
+            var numeroIdItem = <?php echo($numeroIdItem); ?>;
+            
+            if (erreurEnchere == 5)  // montant trop bas
+            {
+                $("#enchereMontant").addClass ("is-invalid");
+            }
         });
 </script>
 
@@ -58,7 +69,7 @@
         </div>
 
         <div class="modal-body">
-            <?php echo($idItem); ?>
+            <?php //echo($idItem); ?>
             <?php 
                 if ($newEnchere == true)
                 {
@@ -69,7 +80,7 @@
                 else
                 {
                     ?>
-                        <p> Dernière offre: <strong> </strong> par:  <strong> </strong></p>
+                        <p> Dernière offre: <strong><?php echo($meilleureOffre); ?> €</strong> par: <strong><?php echo($loginMeilleureOffre); ?></strong></p>
                     <?php
                 }
             ?>
@@ -78,17 +89,25 @@
                     <label for="enchereMontant">Faire une enchère</label>
                     <input type="number" class="form-control" id="enchereMontant" aria-describedby="enchere" name="montantEnchere" >
                     <small id="enchereMontantHelp" class="form-text text-muted">Une enchère en € qui doit être supérieure au prix de départ</small>
+                    <div class="invalid-feedback">
+                            Le montant entré doit être supérieur au montant de l'offre actuelle ! 
+                    </div>
                 </div>
+
                 <div class="form-group form-check">
                     <input type="checkbox" class="form-check-input" id="enchereAutoCheckbox" name="enchereAutoCheckbox">
                     <label class="form-check-label" for="exampleCheck1">Activer les enchères automatiques</label>
                 </div>
+
                 <div class="form-group" id="enchereAutoForm">
                     <label for="enchereAutoMontant">Monant maximal</label>
                     <input type="number" class="form-control" id="enchereAutoMontant" name="autoMax">
                     <small id="enchereAutoMontantHelp" class="form-text text-muted">Le site va enchérir automatiquement pour vous, sans dépasser votre montant maximal</small>
                 </div>
+
                 <input type="hidden" name="idItem" value=<?php echo($idItem); ?> >
+                <input type="hidden" name="urlRedirection" value=<?php echo($urlRed); ?> > <!-- Cette variable $urlRed doit être définie dans la page qui appelle modal_encheres.php -->
+
                 <button type="submit" class="btn btn-success">Démarer les enchères</button> 
             </form>
         </div>
