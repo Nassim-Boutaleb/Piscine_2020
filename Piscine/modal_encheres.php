@@ -1,5 +1,5 @@
 <style>
-    #enchereAutoForm {
+    .acacher {
         display : none;
     }
 </style>
@@ -34,26 +34,31 @@
 ?>
 <script>
         $(document).ready(function() {
+            // La gestion des erreurs
+            // Les variables  php numeroIdItemERR et erreurEnchere sont définies dans la page qui appelle la modal
+            var erreurEnchere = <?php echo($erreurEnchere); ?>;
+            var numeroIdItemERR = <?php echo($numeroIdItemERR); ?>;
+            var idItem = <?php echo($idItem); ?>;
+
             // Cliquer sur l'encoche encheres auto pour dévoiler le champ du montant max
-            $("#enchereAutoCheckbox").on("click",function(){  
-                if (document.getElementById("enchereAutoCheckbox").checked)
+            $("#enchereAutoCheckbox"+idItem).on("click",function(){  
+                //alert ("CLICK "+"enchereAutoCheckbox"+idItem);
+                if (document.getElementById("enchereAutoCheckbox"+idItem).checked)
                 {
-                    $("#enchereAutoForm").slideDown();
+                    //alert ("OOP");
+                    $("#enchereAutoForm"+idItem).slideDown();
                 }
                 else
                 {
-                    $("#enchereAutoForm").slideUp();
+                    //alert ("NNP");
+                    $("#enchereAutoForm"+idItem).slideUp();
                 }
             }); 
 
-            // La gestion des erreurs
-            // Les variables  php numeroIdItem et erreurEnchere sont définies dans la page qui appelle la modal
-            var erreurEnchere = <?php echo($erreurEnchere); ?>;
-            var numeroIdItem = <?php echo($numeroIdItem); ?>;
             
             if (erreurEnchere == 5)  // montant trop bas
             {
-                $("#enchereMontant").addClass ("is-invalid");
+                $("#enchereMontant"+numeroIdItemERR).addClass ("is-invalid");
             }
         });
 </script>
@@ -87,7 +92,7 @@
             <form method="post" action="modal_encheres_traitements.php">
                 <div class="form-group">
                     <label for="enchereMontant">Faire une enchère</label>
-                    <input type="number" class="form-control" id="enchereMontant" aria-describedby="enchere" name="montantEnchere" >
+                    <input type="number" class="form-control" id="enchereMontant<?php echo($idItem); ?>" aria-describedby="enchere" name="montantEnchere" >
                     <small id="enchereMontantHelp" class="form-text text-muted">Une enchère en € qui doit être supérieure au prix de départ</small>
                     <div class="invalid-feedback">
                             Le montant entré doit être supérieur au montant de l'offre actuelle ! 
@@ -95,11 +100,11 @@
                 </div>
 
                 <div class="form-group form-check">
-                    <input type="checkbox" class="form-check-input" id="enchereAutoCheckbox" name="enchereAutoCheckbox">
+                    <input type="checkbox" class="form-check-input" id="enchereAutoCheckbox<?php echo($idItem); ?>" name="enchereAutoCheckbox">
                     <label class="form-check-label" for="exampleCheck1">Activer les enchères automatiques</label>
                 </div>
 
-                <div class="form-group" id="enchereAutoForm">
+                <div class="form-group acacher" id="enchereAutoForm<?php echo($idItem); ?>">
                     <label for="enchereAutoMontant">Monant maximal</label>
                     <input type="number" class="form-control" id="enchereAutoMontant" name="autoMax">
                     <small id="enchereAutoMontantHelp" class="form-text text-muted">Le site va enchérir automatiquement pour vous, sans dépasser votre montant maximal</small>

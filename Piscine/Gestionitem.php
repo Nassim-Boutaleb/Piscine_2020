@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="styles.css">
-
+    <link rel="stylesheet" type="text/css" href="Gestionitem.css">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
 
@@ -30,7 +30,7 @@
             {
                 $("#champModifierImage").prop("disabled", true).trigger("click");
             }
-        });
+        });   
 
         $("#typevente").on("click",function(){
             if (document.getElementById("typevente").selectedIndex == 0)
@@ -42,7 +42,6 @@
                 $("#finEnchere").slideUp();
             }
         });
-
     });
     </script>
 
@@ -64,12 +63,23 @@
 
     <?php require("Navbars/navbar_def.php");  ?>
 
-    <a href="?action=ajout">Ajouter un produit</a>
+
+    <div class="card " style="width: 35rem;height: 20rem;">
+  <div class="card-body">
+    <h2 class="card-title">Options</h2>
+    
+    
+    <button type="button" class="btn btn-secondary float-right"><a href="?action=ajout">Ajouter un produit</a></button>
     <br>
-    <a href="?action=modifsupp">Modifier ou supprimer un produit</a>
     <br>
     <br>
     <br>
+
+    <button type="button" class="btn btn-secondary float-right"><a href="?action=modifsupp">Modifier ou supprimer un produit</a></button>
+  </div>
+</div>
+
+
 
 
 
@@ -121,7 +131,6 @@
                         $db_found = mysqli_select_db($db_handle, $database); 
                         if ($db_found) 
                         { 
-                            // Ajouter l'itam à la table item
                             $sql="INSERT INTO item (Nom,Categorie,Description,Prix,TypeVente,Image,vendeur) VALUES ('$nom','$Categorie','$Description','$Prix','$type','$Photo','$vendeur')";
                             $result = mysqli_query($db_handle, $sql);
 
@@ -147,7 +156,7 @@
                                     $heureFin=date('H:i:00', strtotime($_POST['timeFinEnchere']));
                                     $dateHeureFin = $dateFin." ".$heureFin;
 
-                                    echo("DR: $dateFin; HR: $heureFin, MM: $dateHeureFin, MAX:$numeroIDItem");
+                                    //echo("DR: $dateFin; HR: $heureFin, MM: $dateHeureFin, MAX:$numeroIDItem");
                                     
 
                                     $sqlE="INSERT INTO enchere (IdItem,dateDebut,dateFin) VALUES ('$numeroIDItem',NOW(),'$dateHeureFin')";
@@ -167,7 +176,8 @@
                                     echo"Article ajouté";
                                     header("refresh:2, url=Gestionitem.php");
                                 }
-                                
+                                echo"Article ajouté";?>
+                                <meta http-equiv="refresh" content="1; url=Gestionitem.php?alertCode2=1"> <?php
                             }
                             else
                             {
@@ -257,27 +267,41 @@
                 $db_found = mysqli_select_db($db_handle, $database);
                 $vendeur = $_SESSION["login"]; 
                 { 
-                    
-                $sql="SELECT * FROM item WHERE vendeur='$vendeur' ";
+                    if($vendeur="admin@ece.fr"){
+                        $sql="SELECT * FROM item";
+                    }
+                    else{
+                        $sql="SELECT * FROM item WHERE vendeur='$vendeur' ";
+                    }
+                    /* FAIRE DEUX CAS DISTINCTSPOUR VENDEUR ET ADMIN*/
+                
 
                 $result = mysqli_query($db_handle, $sql);
 
-                
+                ?><br>
+                    <h3 style="text-align: center;">Liste des articles en ligne </h3><?php
 
                 while ($data = mysqli_fetch_assoc($result)){
 
+                    ?>
+
+                    <div class="container" id="listeArticles">
                     
-                    echo $data["NumeroID"]."  ";
-                   
-                    echo $data["Nom"];
+                    <?php echo $data["Nom"];
                     
                     ?>
+                        
+                    
     <br>
-    <button class="btn btn-secondary"><a href="?action=modifier&amp;id=<?php echo $data["NumeroID"];?>"> Modifier
+    
+    <button class="btn btn-success"><a href="?action=modifier&amp;id=<?php echo $data["NumeroID"];?>"> Modifier
         </a></button>
-    <button class="btn btn-secondary"><a href="?action=supp&amp;id=<?php echo $data["NumeroID"];?>"> Supprimer
+    <button class="btn btn-danger"><a href="?action=supp&amp;id=<?php echo $data["NumeroID"];?>"> Supprimer
         </a></button>
     <br><br>
+    </div>
+    </div>
+
 
     <?php
 
@@ -306,8 +330,10 @@
                 }
 
                 ?>
-                    <div class="container">
+                    <div class="container" id="formmodif">
+
                         <form enctype="multipart/form-data" action="" method="POST">
+
                             <div class="form-group">
                                 <label for="nomitem">Nom</label>
                                 <input type="text" class="form-control" name="nomitem" aria-describedby="AideNom"
@@ -390,12 +416,12 @@
                             $Photo = $data["Image"];
                         }
 
-                        echo"submit ok   - ";
+                       
                         
                         $sql4="UPDATE item SET Nom='$nom',Categorie='$Categorie',Description='$Description',Prix='$Prix',TypeVente='$type',Image='$Photo' WHERE NumeroID='$id'";
                         $result4 = mysqli_query($db_handle, $sql4);
                         if($result4){
-                            echo"requete OK";
+                            echo"Article modifié";
                         }
 
                 }
@@ -410,7 +436,7 @@
                 $db_found = mysqli_select_db($db_handle, $database);
                 if ($db_found) 
                 {
-                    echo"BDD OK";
+                    
                     $id=$_GET['id'];
                     $sql2="DELETE FROM item WHERE NumeroID=$id";
                     $result2 = mysqli_query($db_handle, $sql2);

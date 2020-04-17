@@ -3,6 +3,11 @@
 
 }
 
+#affarticles{
+	margin: auto;
+	width: 150px;
+}
+
 
 img{
 	 	margin-left: auto;
@@ -15,8 +20,7 @@ button{
 }
 figcaption{
 	
-	margin: auto;
-	width: 90px;
+	
 }
 figure{
 	width: 650px;

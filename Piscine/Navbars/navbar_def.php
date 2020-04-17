@@ -1,5 +1,6 @@
 <link rel="stylesheet" type="text/css" href="Navbars/navbar_style.css">
 
+
 <?php
     if (!isset ($_SESSION["login"])) // Si on est pas connecté
     {
@@ -153,8 +154,22 @@
         <ul class="navbar-nav ml-auto" id="elementsDroite">
             <span class="d-inline-block" id="ppvPanier" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous pour accéder au panier">
                 <li class="nav-item"><a class="nav-link" href="panier.php" id="panier"><i class="fa fa-shopping-cart"></i> Panier
-                        <span class="badge badge-light">3
-                            <!-- FAIRE UN JAVASCRIPT POUR RENDRE LE NOMBRE DYNAMIQUE--></span> <span
+                        <span class="badge badge-light">
+                            <!--NOMBRE DYNAMIQUE PHP-->
+                            <?php
+                                    $database = "ecebay"; 
+                                    $db_handle = mysqli_connect('localhost', 'root', 'root' ); 
+                                    $db_found = mysqli_select_db($db_handle, $database); 
+                                    if ($db_found) 
+                                    {
+                                        $requete ="SELECT COUNT(*) AS nb FROM acheter_item ";
+                                        $res=mysqli_query($db_handle, $requete);
+                                        
+                                        if($nbArticles=mysqli_fetch_assoc($res)){
+                                            
+                                        echo ($nbArticles["nb"]);}}
+?>
+                            </span> <span
                             class="sr-only">(current)</span></a>
 
                 </li>

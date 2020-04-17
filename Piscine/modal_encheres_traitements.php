@@ -162,7 +162,6 @@
         if ($erreur == 0)
         {
             ?>
-                <script> alert("HUEGLLO"), </script>
                 <meta http-equiv="refresh" content="0; url=<?php echo($urlRed); ?>">
             <?php
         }

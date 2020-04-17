@@ -32,3 +32,8 @@
 .pagination {
     margin-top: 20px;
 }
+
+.alert{
+    display:none;
+}
+
