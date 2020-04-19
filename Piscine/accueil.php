@@ -1,16 +1,49 @@
 <?php session_start(); ?>
 <!DOCTYPE html> 
 <html> 
-    <head>  
+    <head> 
+        <style>
+          #notifs {
+            position: absolute;
+            left:60%;
+            min-height: 200px; 
+            /*border: red solid 4px; */
+            z-index:1;
+            width: 300px;
+          }
+        </style> 
         <title>Ebay ECE</title> 
         <meta charset="utf-8">  
         <meta name="viewport" content="width=device-width, initial-scale=1">      
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"> 
         <link rel="stylesheet" type="text/css" href="styles.css">  
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" >
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" ></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" ></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" ></script>
 
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>  
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script> 
-
+        
+        
+         <!-- appel au script de vérification des enchères terminées -->
+         <?php 
+          if (isset ($_SESSION["login"]))
+          {
+            //require("verifier_encheres.php"); 
+            
+            
+            ?><script>
+              setInterval ( function() {
+                $.ajax ({
+                  url: 'verifier_encheres.php',
+                  type: 'GET'
+                });
+              },60000 ); 
+            </script> <?php
+            require("verifier_transactions.php"); 
+          }
+        ?>
+        
+        
+        
         <?php
           $alertCode = isset($_GET["alertCode"])?$_GET["alertCode"] : "0" ; 
         ?>
@@ -38,7 +71,6 @@
                   $("#texteAlerteD").text("ERREUR DROIT D'ACCES");
                   $("#AlerteD").slideDown();
                 }
-
             }); 
         </script>
 
@@ -65,6 +97,14 @@
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
+        </div>
+
+        <!-- Notifs -->
+        <div id="notifs" aria-live="polite" aria-atomic="true" >
+          <!-- Position it -->
+          <div id="notifsDOM" style="position: absolute; top: 0; left: 0;">
+            <!-- Java script DOM -->
+          </div>
         </div>
 
         <!-- Un caroussel (code inspiré de la doc de bootstrap ) -->

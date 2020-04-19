@@ -26,7 +26,7 @@
 
        
             <blockquote class="blockquote text-center">
-                <p class="mb-0">Enchères en cours</p>
+                <p class="mb-0">Articles à negocier</p>
                 <footer class="blockquote-footer">Une selection d'articles hors du commun </footer>
             </blockquote>
 <?php
@@ -129,13 +129,17 @@
         if ($db_found) 
         {
             
-            $sql="SELECT * FROM item WHERE TypeVente='Meilleure Offre'";           $result = mysqli_query($db_handle, $sql);
+            $sql="SELECT * FROM item WHERE TypeVente='Meilleure Offre' AND afficher='1'";           $result = mysqli_query($db_handle, $sql);
 
             while ($data = mysqli_fetch_assoc($result))
             {
                 //Sauvegarder les variables 
                 $nomItem = $data["Nom"];
                 $idItem = $data["NumeroID"];
+
+
+
+                                
                 ?>
 
                 
@@ -154,11 +158,12 @@
             
                 if ($statut == "acheteur")
                 {
-                    if ($data["TypeVente"] == "Enchere") // Si c'est une enchere alors pop up
+                    if ($data["TypeVente"] == "Meilleure Offre") // Si c'est une meilleure offre alors pop up
                     {
-                        ?><button type="submit" name="enchere" value="<?php echo($data["NumeroID"]); ?>" class="btn btn-secondary " data-toggle="modal" data-target="#enchereID<?php echo($data["NumeroID"]); ?>">Enchérir</button>
-                            <div class="modal fade" id="enchereID<?php echo($data["NumeroID"]); ?>" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                <?php require ("modal_encheres.php"); ?>
+                        ?><button type="submit" name="negocier" value="<?php echo($data["NumeroID"]); ?>" class="btn btn-secondary " data-toggle="modal" data-target="#offreID<?php echo($data["NumeroID"]); ?>">Negocier</a></button>
+                        
+                            <div class="modal fade" id="offreID<?php echo($data["NumeroID"]); ?>" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <?php require ("modal_meilleure_offre.php"); ?>
                             </div>
                         <?php
                     }
@@ -175,6 +180,7 @@
                         
                     
                 }
+
                                          ?>
             </figure>              
                 <br>

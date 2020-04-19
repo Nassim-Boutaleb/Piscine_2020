@@ -173,7 +173,7 @@
                 <br>
                 </div>   
                 <br>
-                <button class="btn btn-outline-primary"><a href="?action=Supprimer&amp;id=<?php echo $data3["NumeroID"];?>"> Supprimer
+                <button class="btn btn-outline-primary"><a href="?action=Supprimer&amp;id=<?php echo $data2["NumeroID"];?>"> Supprimer
         </a></button>
             <?php
                         if(isset($_GET['action'])){
@@ -263,8 +263,7 @@
         
 
       ?>
-      <button class="btn btn-outline-primary"><a href=""> Paiement
-        </a></button>
+      <button class="btn btn-outline-primary"><a href=""> Paiement</a></button>
       </div>
    </div>
 </div>

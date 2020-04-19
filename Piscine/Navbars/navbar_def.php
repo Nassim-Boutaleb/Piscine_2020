@@ -36,17 +36,17 @@
                 $("#Acheter").attr ({
                     "aria-disabled" : "true",
                     "href" : "#"
-                }).addClass("disabled");
+                }).css("color","grey");
 
                 $("#Vendre").attr ({
                     "aria-disabled" : "true",
                     "href" : "#"
-                }).addClass("disabled");
+                }).css("color","grey");
 
                 $("#panier").attr ({
                     "aria-disabled" : "true",
                     "href" : "#"
-                }).addClass("disabled");
+                }).css("color","grey");
 
             }
 
@@ -70,11 +70,25 @@
                 $("#Vendre").attr ({
                     "aria-disabled" : "true",
                     "href" : "#"
-                }).addClass("disabled");
+                }).css("color","grey");
             }
 
             else if (connecte == 1 && statut != "acheteur") // Si on n'est pas un acheteur (vendeur ou admin)
             {
+                // Supprimer le popover de vendre qui est accsssible
+                $("#ppvVendre").removeAttr("data-toggle");
+                
+                // Bloquer les liens vers acheter et panier
+                $("#Acheter").attr ({
+                    "aria-disabled" : "true",
+                    "href" : "#"
+                }).css("color","grey");
+
+                $("#panier").attr ({
+                    "aria-disabled" : "true",
+                    "href" : "#"
+                }).css("color","grey");
+
                 // popover (pop up)
                 $(function () {
                     $('[data-toggle="popover"]').popover()
@@ -84,20 +98,6 @@
                 $('.popover-dismiss').popover({
                     trigger: 'focus'
                 });
-
-                // Supprimer le popover de vendre qui est accsssible
-                $("#ppvVendre").removeAttr("data-toggle");
-                
-                // Bloquer les liens vers acheter et panier
-                $("#Acheter").attr ({
-                    "aria-disabled" : "true",
-                    "href" : "#"
-                }).addClass("disabled");
-
-                $("#panier").attr ({
-                    "aria-disabled" : "true",
-                    "href" : "#"
-                }).addClass("disabled");
             }
         });
 </script>
@@ -136,7 +136,7 @@
             <span class="d-inline-block" id="ppvAcheter" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous avec un compte acheteur pour accéder à la page des achats">
                 <li class="nav-item"><a class="nav-link" href="achat.php" id="Acheter">Acheter</a></li>
             </span>
-            <span class="d-inline-block" id="ppvVendre" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous avec un compte vendeur pour accéder à la page des ventes">
+            <span class="d-inline-block" id="ppvVendre" data-toggle="popover"  data-placement="bottom" data-content="Connectez vous avec un compte vendeur pour accéder à la page des ventes">
                 <li class="nav-item"><a class="nav-link" href="Gestionitem.php"  id="Vendre">Vendre</a></li>
             </span>
 

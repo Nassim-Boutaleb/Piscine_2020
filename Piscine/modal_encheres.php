@@ -15,16 +15,17 @@
         $result2 = mysqli_query($db_handle, $sql2);
         $data2 = mysqli_fetch_assoc($result2); 
 
-        
-        if (!isset($data2["meilleureOffre"])) // Si aucune offre n'a encore été faite
+        $meilleureOffre = isset($data2["meilleureOffre"])?$data2["meilleureOffre"]:0;
+
+        if (!isset($data2["loginMeilleureOffre"])) // Si aucune offre n'a encore été faite
         {
             $newEnchere = true; // Pour les affichages
+            
 
         }
         else // Si une offre a déja été faite 
         {
             $newEnchere = false;
-            $meilleureOffre = $data2["meilleureOffre"];
             $loginMeilleureOffre = $data2["loginMeilleureOffre"];
         }
 
@@ -37,8 +38,8 @@
             // La gestion des erreurs
             // Les variables  php numeroIdItemERR et erreurEnchere sont définies dans la page qui appelle la modal
             var erreurEnchere = <?php echo($erreurEnchere); ?>;
-            var numeroIdItemERR = <?php echo($numeroIdItemERR); ?>;
-            var idItem = <?php echo($idItem); ?>;
+            var numeroIdItemERR = <?php echo($numeroIdItemERR); ?>; // l'ID de l'item dont l'enchere est en erreur
+            var idItem = <?php echo($idItem); ?>;  // l'id de l'item dont on affiche l'enchere
 
             // Cliquer sur l'encoche encheres auto pour dévoiler le champ du montant max
             $("#enchereAutoCheckbox"+idItem).on("click",function(){  
@@ -80,6 +81,7 @@
                 {
                     ?>
                         <p>Aucune offre n'a encore été faite. Vous êtes le premier ! </p>
+                        <p>Le prix minimal demandé par le vendeur est <?php echo($meilleureOffre); ?> € </p>
                     <?php
                 }
                 else
@@ -92,7 +94,7 @@
             <form method="post" action="modal_encheres_traitements.php">
                 <div class="form-group">
                     <label for="enchereMontant">Faire une enchère</label>
-                    <input type="number" class="form-control" id="enchereMontant<?php echo($idItem); ?>" aria-describedby="enchere" name="montantEnchere" >
+                    <input type="number" class="form-control" id="enchereMontant<?php echo($idItem); ?>" aria-describedby="enchere" name="montantEnchere" value="<?php echo($meilleureOffre+1); ?>" >
                     <small id="enchereMontantHelp" class="form-text text-muted">Une enchère en € qui doit être supérieure au prix de départ</small>
                     <div class="invalid-feedback">
                             Le montant entré doit être supérieur au montant de l'offre actuelle ! 
@@ -106,7 +108,7 @@
 
                 <div class="form-group acacher" id="enchereAutoForm<?php echo($idItem); ?>">
                     <label for="enchereAutoMontant">Monant maximal</label>
-                    <input type="number" class="form-control" id="enchereAutoMontant" name="autoMax">
+                    <input type="number" class="form-control" id="enchereAutoMontant" name="autoMax" value="<?php echo($meilleureOffre+1); ?>">
                     <small id="enchereAutoMontantHelp" class="form-text text-muted">Le site va enchérir automatiquement pour vous, sans dépasser votre montant maximal</small>
                 </div>
 

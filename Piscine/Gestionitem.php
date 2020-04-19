@@ -6,11 +6,13 @@
     <title>Ebay ECE</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    
     <link rel="stylesheet" type="text/css" href="styles.css">
     <link rel="stylesheet" type="text/css" href="Gestionitem.css">
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" >
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" ></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" ></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" ></script>
 
     <style>
         #finEnchere {
@@ -62,6 +64,7 @@
     <!-- Navbar (barre de navigation)-->
 
     <?php require("Navbars/navbar_def.php");  ?>
+ 
 
 
     <div class="card " style="width: 35rem;height: 20rem;">
@@ -147,10 +150,7 @@
                                     $numeroIDItem = $dataE["maxIdItem"];
 
                                     
-                                    /*$dateAjout = time();  // timestamp de l'ajout
-                                    $dureeSecondes = 2*60*60;      //Disons 2heures // $_POST["typevente"]; pour récup valeur utilisateur une fois mis en place 
-
-                                    $timestamp = date("Y-m-d H:i:s"); */
+                                    
 
                                     $dateFin = date('Y-m-d', strtotime($_POST['dateFinEnchere']));
                                     $heureFin=date('H:i:00', strtotime($_POST['timeFinEnchere']));
@@ -159,7 +159,7 @@
                                     //echo("DR: $dateFin; HR: $heureFin, MM: $dateHeureFin, MAX:$numeroIDItem");
                                     
 
-                                    $sqlE="INSERT INTO enchere (IdItem,dateDebut,dateFin) VALUES ('$numeroIDItem',NOW(),'$dateHeureFin')";
+                                    $sqlE="INSERT INTO enchere (IdItem,meilleureOffre,dateDebut,dateFin) VALUES ('$numeroIDItem',$Prix,NOW(),'$dateHeureFin')";
                                     $resultE = mysqli_query($db_handle, $sqlE);
                                     if ($resultE)
                                     {
@@ -171,6 +171,28 @@
                                         echo"Erreur ajout enchère";
                                     }
                                 }
+                                /* Si L'article est de type meilleure offre remplir la table*/
+                                else if ($type == "Meilleure Offre")
+                                {
+                                    
+                                   $sqlE="SELECT MAX(NumeroID) AS maxIdItem FROM item ";
+                                    $resultE = mysqli_query($db_handle, $sqlE);
+                                    $dataE = mysqli_fetch_assoc($resultE);
+                                    $numeroIDItem = $dataE["maxIdItem"];
+
+                                    $sqlO="INSERT INTO meilleure_offre(IdItemOffre,nbOffres) VALUES('$numeroIDItem','0')"; 
+                                    $resultO=mysqli_query($db_handle, $sqlO);
+                                    if($resultO){
+                                        echo"Article ajouté";
+                                        header("refresh:2, url=Gestionitem.php");
+                                    }
+                                    else
+                                    {
+                                        echo"ERREUR ajout meilleure offre";
+                                    }
+
+                                }
+
                                 else 
                                 {
                                     echo"Article ajouté";
@@ -235,10 +257,12 @@
                 <div class="form-row col-md-4" >
                     <label for="dateFinEnchere">Date de fin de l'enchère</label>
                     <input type="date" class="form-control" id="dateFinEnchere" name="dateFinEnchere">
+                    <small class="form-text text-muted">JJ/MM/AAAA</small>
                 </div>
                 <div class="form-row col-md-4" >
                     <label for="timeFinEnchere">Heure de fin de l'enchère</label>
                     <input type="time" class="form-control" id="timeFinEnchere" name="timeFinEnchere">
+                    <small class="form-text text-muted">HH:MM</small>
                 </div>
             </div>
             <div class="form-group">
