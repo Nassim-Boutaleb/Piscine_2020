@@ -7,8 +7,8 @@
 
 <?php
     // On verrifier si l'utilisateur a deja fait une offre
-    $urlRed= "accueil.php";
-        $sql2 = "SELECT * FROM meilleure_offre WHERE idItemOffre ='$idItem'  ";  
+ 
+       $sql2 = "SELECT * FROM meilleure_offre WHERE idItemOffre ='$idItem'  ";  
 
         $result2 = mysqli_query($db_handle, $sql2);
         if($result2){
@@ -26,11 +26,10 @@
         else // Si une offre a déja été faite 
         {
             $newnegotiation = false;
-            $lastnegociation = $data2["prixVendeur"];
-            $consensus=$data2["Consensus"];
-            
             
         }
+        $lastnegociation = $data2["PrixVendeur"];
+        $consensus=$data2["Consensus"];
 
         $idOffre=$data2["IdOffre"];
         $nbOffres=$data2["nbOffres"];
@@ -99,9 +98,10 @@
 
                 </div>
                 <input type="hidden" name="idItem" value=<?php echo($idItem); ?> >
-                <input type="hidden" name="idOffre" value=<?php echo($idOffre); ?> >
+                 <input type="hidden" name="idOffre" value=<?php echo($idOffre); ?> >
                 <input type="hidden" name="nbOffres" value=<?php echo($nbOffres); ?> >
-                <input type="hidden" name="urlRedirection" value=<?php echo($urlRed); ?> > <!-- Cette variable $urlRed doit être définie dans la page qui appelle modal_encheres.php -->
+                <input type="hidden" name="urlRedirection" value=<?php echo($urlRed); ?> > 
+                <!-- Cette variable $urlRed doit être définie dans la page qui appelle modal_encheres.php -->
                 <button type="submit" class="btn btn-success">Soumettre l'offre</button> 
 
             </form>
@@ -144,6 +144,9 @@
             </form>
             <br>
             <form  method="post" action="modal_meilleure_offre_traitement2.php">
+                <input type="hidden" name="idItem" value=<?php echo($idItem); ?> >
+                <input type="hidden" name="idOffre" value=<?php echo($idOffre); ?> >
+                <input type="hidden" name="nbOffres" value=<?php echo($nbOffres); ?> >
                 <button  type="submit" id="Finnegotiation<?php echo($idItem); ?>" class="btn btn-danger" name="Finnegotiation">Accepter la dernière offre</button>
             </form>
 

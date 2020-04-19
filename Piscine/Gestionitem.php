@@ -6,13 +6,11 @@
     <title>Ebay ECE</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="styles.css">
     <link rel="stylesheet" type="text/css" href="Gestionitem.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" >
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js" ></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" ></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
 
     <style>
         #finEnchere {
@@ -64,40 +62,30 @@
     <!-- Navbar (barre de navigation)-->
 
     <?php require("Navbars/navbar_def.php");  ?>
- 
 
 
     <div class="card " style="width: 35rem;height: 20rem;">
-  <div class="card-body">
-    <h2 class="card-title">Options</h2>
-    
-    
-    <button type="button" class="btn btn-secondary float-right"><a href="?action=ajout">Ajouter un produit</a></button>
-    <br>
-    <br>
-    <br>
-    <br>
-
-    <button type="button" class="btn btn-secondary float-right"><a href="?action=modifsupp">Modifier ou supprimer un produit</a></button>
-  </div>
-</div>
-
-
-
-
-
-
+        <div class="card-body">
+            <h2 class="card-title">Options</h2>
+                <button type="button" class="btn btn-secondary float-right"><a href="?action=ajout">Ajouter un produit</a></button>
+                <br>
+                <br>
+                <br>
+                <br>
+                <button type="button" class="btn btn-secondary float-right"><a href="?action=modifsupp">Modifier ou supprimer un produit</a></button>
+        </div>
+    </div>
 
     <!--TRAITEMENT DE L'AJOUT-->
 
     <?php
 
-        if(isset($_GET['action'])){
-           
-            if($_GET['action']=='ajout'){
-
-
-                if(isset($_POST['submit'])){
+        if(isset($_GET['action']))
+        {
+            if($_GET['action']=='ajout')
+            {
+                if(isset($_POST['submit']))
+                {
 
                     $nom = $_POST["nomitem"];
                     $Description =$_POST["Descriptionitem"];
@@ -111,10 +99,13 @@
                     $uploadfile = $uploaddir . basename($_FILES['Photoitem']['name']);
 
                     
-                    if (move_uploaded_file($_FILES['Photoitem']['tmp_name'], $uploadfile)) {
+                    if (move_uploaded_file($_FILES['Photoitem']['tmp_name'], $uploadfile)) 
+                    {
                         echo "Le fichier est valide, et a été téléchargé
                             avec succès. Voici plus d'informations :\n";
-                    } else {
+                    } 
+                    else 
+                    {
                         echo "Attaque potentielle par téléchargement de fichiers.
                             Voici plus d'informations :\n";
                         echo 'Voici quelques informations de débogage :';
@@ -134,7 +125,7 @@
                         $db_found = mysqli_select_db($db_handle, $database); 
                         if ($db_found) 
                         { 
-                            $sql="INSERT INTO item (Nom,Categorie,Description,Prix,TypeVente,Image,vendeur) VALUES ('$nom','$Categorie','$Description','$Prix','$type','$Photo','$vendeur')";
+                            $sql="INSERT INTO item (Nom,Categorie,Description,Prix,TypeVente,Image,vendeur,afficher) VALUES ('$nom','$Categorie','$Description','$Prix','$type','$Photo','$vendeur','1')";
                             $result = mysqli_query($db_handle, $sql);
 
                             if($result)
@@ -180,7 +171,8 @@
                                     $dataE = mysqli_fetch_assoc($resultE);
                                     $numeroIDItem = $dataE["maxIdItem"];
 
-                                    $sqlO="INSERT INTO meilleure_offre(IdItemOffre,nbOffres) VALUES('$numeroIDItem','0')"; 
+
+                                    $sqlO="INSERT INTO meilleure_offre(IdItemOffre,nbOffres,PrixVendeur,Consensus) VALUES('$numeroIDItem','0','$Prix','0')"; 
                                     $resultO=mysqli_query($db_handle, $sqlO);
                                     if($resultO){
                                         echo"Article ajouté";
@@ -279,85 +271,62 @@
     </div>
 
     <!-- Traitement modifier ou supprimer -->
-    <?php
+            <?php
 
             
 
-            }else if($_GET['action']=='modifsupp'){
+            } // fermer if get[action] = ajout
+            else if($_GET['action']=='modifsupp')
+            {
                 $database = "ecebay";
 
-                
                 $db_handle = mysqli_connect('localhost', 'root', 'root'); 
                 $db_found = mysqli_select_db($db_handle, $database);
                 $vendeur = $_SESSION["login"]; 
-                { 
-                    if($vendeur="admin@ece.fr"){
-                        $sql="SELECT * FROM item";
-                    }
-                    else{
-                        $sql="SELECT * FROM item WHERE vendeur='$vendeur' ";
-                    }
-                    /* FAIRE DEUX CAS DISTINCTSPOUR VENDEUR ET ADMIN*/
-                
-
+                 
+                if($_SESSION["statut"] == "admin")
+                {
+                    $sql="SELECT * FROM item";
+                }
+                else 
+                {
+                    //echo ($vendeur);
+                    $sql="SELECT * FROM item WHERE vendeur='$vendeur' ";
+                }
+                /* FAIRE DEUX CAS DISTINCTSPOUR VENDEUR ET ADMIN*/
                 $result = mysqli_query($db_handle, $sql);
 
-                ?><br>
-                    <h3 style="text-align: center;">Liste des articles en ligne </h3><?php
-
-                while ($data = mysqli_fetch_assoc($result)){
-
+                ?>
+                <br>
+                <h3 style="text-align: center;">Liste des articles en ligne </h3><?php
+                while ($data = mysqli_fetch_assoc($result))
+                {
                     ?>
-
                     <div class="container" id="listeArticles">
-                    
-                    <?php echo $data["Nom"];
-                    
-                    ?>
-                        
-                    
-    <br>
-    
-    <button class="btn btn-success"><a href="?action=modifier&amp;id=<?php echo $data["NumeroID"];?>"> Modifier
-        </a></button>
-    <button class="btn btn-danger"><a href="?action=supp&amp;id=<?php echo $data["NumeroID"];?>"> Supprimer
-        </a></button>
-    <br><br>
-    </div>
-    </div>
-
-
-    <?php
-
+                        <?php echo $data["Nom"]; ?>    
+                        <br>
+                        <button class="btn btn-success"><a href="?action=modifier&amp;id=<?php echo $data["NumeroID"];?>"> Modifier</a></button>
+                        <button class="btn btn-danger"><a href="?action=supp&amp;id=<?php echo $data["NumeroID"];?>"> Supprimer</a></button>
+                        <br><br>
+                    </div>
+            <?php
                 }
-            }
-                
             }
             else if($_GET['action']=='modifier')       
             {
-
-
-
-
                 $database = "ecebay";
                 $db_handle = mysqli_connect('localhost', 'root', 'root'); 
                 $db_found = mysqli_select_db($db_handle, $database);
                 if ($db_found) 
                 {
-
                     $id=$_GET['id'];
-                    
                     $sql3="SELECT * FROM item WHERE NumeroID='$id' ";
                     $result3 = mysqli_query($db_handle, $sql3);
                     $data = mysqli_fetch_assoc($result3);
-               
                 }
-
                 ?>
                     <div class="container" id="formmodif">
-
                         <form enctype="multipart/form-data" action="" method="POST">
-
                             <div class="form-group">
                                 <label for="nomitem">Nom</label>
                                 <input type="text" class="form-control" name="nomitem" aria-describedby="AideNom"
@@ -400,15 +369,12 @@
                                 <label for="PhotoitemR">Photo de l'article</label>
                                 <input type="file" class="form-control-file" name="PhotoitemR" id="champModifierImage" disabled>
                             </div>
-
                             <button type="submit" class="btn btn-primary" name="modif" value='Modifier'>Modifier</button>
                         </form>
                     </div>
-
-
-
-    <?php
-                     if(isset($_POST['modif'])){
+                <?php
+                     if(isset($_POST['modif']))
+                     {
                         $nom = $_POST["nomitem"];
                         $Description =$_POST["Descriptionitem"];
                         $Categorie= $_POST["Categorieitem"];
@@ -440,15 +406,13 @@
                             $Photo = $data["Image"];
                         }
 
-                       
-                        
                         $sql4="UPDATE item SET Nom='$nom',Categorie='$Categorie',Description='$Description',Prix='$Prix',TypeVente='$type',Image='$Photo' WHERE NumeroID='$id'";
                         $result4 = mysqli_query($db_handle, $sql4);
                         if($result4){
                             echo"Article modifié";
                         }
 
-                }
+                    }
 
             }
             /* SUPPRESION ARTICLE*/
@@ -466,7 +430,7 @@
                     $result2 = mysqli_query($db_handle, $sql2);
                 }                
             }
-        }
+        } // fin if isset action
         ?>
 
 </body>

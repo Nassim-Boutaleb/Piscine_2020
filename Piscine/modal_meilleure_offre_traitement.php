@@ -26,8 +26,8 @@
 
     $db_handle = mysqli_connect('localhost', 'root', 'root' ); 
     $db_found = mysqli_select_db($db_handle, $database); 
-    if ($db_found) { 
-
+    if ($db_found) 
+    { 
         $sqlA = "SELECT * FROM meilleure_offre WHERE idItemOffre ='$idItem'  ";  
 
         $resultA = mysqli_query($db_handle, $sqlA);
@@ -35,43 +35,45 @@
             $dataA = mysqli_fetch_assoc($resultA); 
         
 
-        if ($dataA["nbOffres"]==0) // Si aucune offre n'a encore été faite
+            if ($dataA["nbOffres"]==0) // Si aucune offre n'a encore été faite
             
-        {
+            {
             
-            $newnegotiation = true; // Pour les affichages
+                $newnegotiation = true; // Pour les affichages
             
 
-        }
-        else // Si une offre a déja été faite 
-        {
-            $newnegotiation = false;
-            $lastnegociation = $dataA["prixVendeur"];
+            }
+             else // Si une offre a déja été faite 
+            {
+                $newnegotiation = false;
+                echo"$newnegotiation";
+    
+            }
+
+            $lastnegotiation = $dataA["PrixVendeur"];
             $consensus=$dataA["Consensus"];
-            
-            
-        }
-    }
         
         if($newnegotiation == true)
         {
             $sql0="INSERT INTO acheter_item(loginAcheteur,NumeroIDItem) VALUES ('$login','$idItem')";
             $result0= mysqli_query($db_handle, $sql0);
-            if ($result0) {
+            if ($result0)
+            {
                 echo"INSERTION ACHETER ITEM OK";
             }
-            else{
+            else
+            {
                 echo"ERREUR ACHETER ITEM --";
                 echo"$login";
                 echo"$idItem";
             }
 
-            
+
             $sql="INSERT INTO acheteur_offre(login,prixAcheteur,IdOffre) VALUES ('$login','$montantOffreinput','$idOffre')";
             $result = mysqli_query($db_handle, $sql);
             if($result)
             {
-                
+               
                 //on défini le nombre d'offre actuel
                 $newnboffre=$nbOffres+1;
                 
@@ -87,6 +89,9 @@
                     {
                         $sql3="INSERT INTO acheter_item(loginAcheteur,NumeroIDItem) VALUES ('$login','$idItem')";
                         echo"Update item ok";
+                        ?>
+                            <meta http-equiv="refresh" content="1; url=Panier.php"> 
+                        <?php
                     }
                     else
                     {
@@ -94,21 +99,22 @@
                     }
                 }
             }
+
         }
 
-        else 
+        else if($newnegotiation == false)
         {
             echo"new negociation -- ";
-            if($nbOffres<=6)
+            if($nbOffres<5)
             {
-                echo"nb< 6 -- ";
+                echo"nb offres= $nbOffres  -- ";
                 $sql="UPDATE acheteur_offre SET prixAcheteur='$montantOffreinput' WHERE IdOffre='$idOffre'";
                 $result = mysqli_query($db_handle, $sql);
 
                 if($result)
                 { 
                     echo"UPDATING1 OK -- ";
-                    $data=mysqli_fetch_assoc($result);
+                    
                     //on défini le nombre d'offre actuel
                     $newnboffre=$nbOffres+1;
                     echo"nvx nombre offre $newnboffre";
@@ -118,6 +124,10 @@
                     if ($result1) 
                     {
                         echo"UPDATING2 OK -- ";
+                        ?>
+                            <meta http-equiv="refresh" content="1; url=Panier.php"> 
+                        <?php
+
                     }
                 
                 }
@@ -125,10 +135,56 @@
             }
             else
             {
+               echo"Nombre maximal de négotiation atteint, l'article sera remis dans le catalogue";
+                $sql4="DELETE FROM acheter_item WHERE NumeroIDItem='$idItem'";
+                $result4 = mysqli_query($db_handle, $sql4);
+                
+                if($result4)
+                {
 
+                    echo "Article supprimé";
+                    $sql5="UPDATE item SET afficher='1' WHERE NumeroID='$idItem'";
+                    $result5=mysqli_query($db_handle, $sql5);
+
+                    if($result5)
+                    { 
+                        echo"result5";
+                        $sql6="SELECT * FROM meilleure_offre WHERE IdItemOffre='$idItem' ";
+                        $result6=mysqli_query($db_handle, $sql6);
+
+                        if($data6=mysqli_fetch_assoc($result6))
+                        {   echo"result6";
+                            $idOffre=$data6["IdOffre"];
+                            $sql7="DELETE FROM acheteur_offre WHERE IdOffre='$idOffre'";
+                            $result7=mysqli_query($db_handle, $sql7);
+
+                            if($result7)
+                           {   echo"result7";
+                                $sql8="SELECT Prix FROM item WHERE NumeroID='$idItem'";
+                                $result8=mysqli_query($db_handle,$sql8);
+                                $data=mysqli_fetch_assoc($result8);
+                                $PrixV=$data["Prix"];
+                                echo"$PrixV";
+                                $newnboffre=0;
+                                $sql9="UPDATE meilleure_offre SET nbOffres ='$newnboffre',PrixVendeur='$PrixV' WHERE IdItemOffre ='$idItem'";
+
+                            
+                                $result9=mysqli_query($db_handle,$sql9);
+
+                                if($result9)
+                                {   echo"result9";
+                                    ?>
+                                    <meta http-equiv="refresh" content="1; url=Panier.php"> 
+                                    <?php
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
+}
     else{
         echo "Erreur chargement de la base";
     }

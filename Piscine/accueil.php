@@ -27,7 +27,7 @@
          <?php 
           if (isset ($_SESSION["login"]))
           {
-            //require("verifier_encheres.php"); 
+            require("verifier_encheres.php"); 
             
             
             ?><script>
@@ -36,7 +36,7 @@
                   url: 'verifier_encheres.php',
                   type: 'GET'
                 });
-              },60000 ); 
+              },60000 );  
             </script> <?php
             require("verifier_transactions.php"); 
           }
@@ -70,6 +70,12 @@
                 {
                   $("#texteAlerteD").text("ERREUR DROIT D'ACCES");
                   $("#AlerteD").slideDown();
+                }
+
+                if (alertCode == 15) // erreur de droit d'accès
+                {
+                  $("#texteAlerte").text("Vos achats ont bien été prix en compte. Votre carté a été débitée. Merci pour vos achats !");
+                  $("#Alerte").slideDown();
                 }
             }); 
         </script>

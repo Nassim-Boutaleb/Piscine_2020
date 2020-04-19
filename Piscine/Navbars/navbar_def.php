@@ -136,7 +136,7 @@
             <span class="d-inline-block" id="ppvAcheter" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous avec un compte acheteur pour accéder à la page des achats">
                 <li class="nav-item"><a class="nav-link" href="achat.php" id="Acheter">Acheter</a></li>
             </span>
-            <span class="d-inline-block" id="ppvVendre" data-toggle="popover"  data-placement="bottom" data-content="Connectez vous avec un compte vendeur pour accéder à la page des ventes">
+            <span class="d-inline-block" id="ppvVendre" data-toggle="popover"  data-trigger="focus" data-placement="bottom" data-content="Connectez vous avec un compte vendeur pour accéder à la page des ventes">
                 <li class="nav-item"><a class="nav-link" href="Gestionitem.php"  id="Vendre">Vendre</a></li>
             </span>
 
@@ -153,21 +153,23 @@
 
         <ul class="navbar-nav ml-auto" id="elementsDroite">
             <span class="d-inline-block" id="ppvPanier" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous pour accéder au panier">
-                <li class="nav-item"><a class="nav-link" href="panier.php" id="panier"><i class="fa fa-shopping-cart"></i> Panier
+                <li class="nav-item"><a class="nav-link" href="Panier.php" id="panier"><i class="fa fa-shopping-cart"></i> Panier
                         <span class="badge badge-light">
                             <!--NOMBRE DYNAMIQUE PHP-->
                             <?php
                                     $database = "ecebay"; 
                                     $db_handle = mysqli_connect('localhost', 'root', 'root' ); 
-                                    $db_found = mysqli_select_db($db_handle, $database); 
+                                    $db_found = mysqli_select_db($db_handle, $database);
+                                    $loginA = isset($_SESSION["login"])?$_SESSION["login"]:"notConnected"; 
                                     if ($db_found) 
                                     {
-                                        $requete ="SELECT COUNT(*) AS nb FROM acheter_item ";
+                                        $requete ="SELECT COUNT(*) AS nb FROM acheter_item WHERE loginAcheteur = '$loginA' ";
                                         $res=mysqli_query($db_handle, $requete);
                                         
                                         if($nbArticles=mysqli_fetch_assoc($res)){
                                             
-                                        echo ($nbArticles["nb"]);}}
+                                        echo ($nbArticles["nb"]);}
+                                    }
 ?>
                             </span> <span
                             class="sr-only">(current)</span></a>
@@ -190,6 +192,7 @@
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <a class="dropdown-item" href="gerer_compte.php">Mes informations personnelles</a>
                                         <a class="dropdown-item" href="deconnexion.php">Me déconnecter</a>
+
                                     </div>
                                 </li>
                             <?php

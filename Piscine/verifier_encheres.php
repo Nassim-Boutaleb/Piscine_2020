@@ -48,7 +48,7 @@
                 $prix = $data["meilleureOffre"];
                 $dateTransaction = $aujourdhui;
 
-                // Pour récupérer le nom du produit ...
+                // Mais il faut  récupérer le nom du produit ...
                 $sql2 = "SELECT Nom FROM item WHERE NumeroID='$idItem' ";  // on regarde toutes les enchères ouvertes
                 $result2 = mysqli_query($db_handle, $sql2); 
                 $data2 = mysqli_fetch_assoc($result2);
@@ -67,7 +67,22 @@
                 else  
                 {
                     // regarder dans acheteur enchere tous ceux qui ont participé et leur ajouter une transaction refusee
-                    //...
+                    
+                    $sql3 = "SELECT loginAcheteur FROM acheteur_enchere WHERE IdEnchere = '$idEnchere' AND loginAcheteur != '$loginGagnant' " ;
+                    $result3 = mysqli_query($db_handle, $sql3);
+                    while ($data3 = mysqli_fetch_assoc($result3)) 
+                    {
+                        $loginPerdant = $data3["loginAcheteur"];
+                        $sql4 = "INSERT INTO transactions_effectuees (login,idItem,prix,typeVente,idEnchere,date,accepteeRefusee,nomProduit) VALUES ('$loginPerdant','$idItem','$prix','Enchere','$idEnchere','$dateTransaction','2','$nomProduit')";
+                        $result4 = mysqli_query($db_handle, $sql4);
+                        
+                        if (!$result4)
+                        {
+                            echo ("erreur lors de l'ajout de la transaction pour les perdants");
+                            $erreurVE = 99;
+                        }
+                    }
+
 
                     // supprimer l'item : il n'est plus disponible à la vente
                     $sql3 = "DELETE FROM item WHERE NumeroID = '$idItem' ";

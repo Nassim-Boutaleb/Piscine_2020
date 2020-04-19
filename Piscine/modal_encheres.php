@@ -6,16 +6,18 @@
 
 <?php
     
-        
+        $login = $_SESSION["login"];
         // On va commencer par savoir si l'enchère a déjà débuté (une offre faite) ou si 
         // elle n'a pas encore débuté (l'utilisateur va faire la 1ere offre)
         // ATTENTION la variable $idItem doit être définie dans la page qui appelle modal_encheres.php
 
-        $sql2 = "SELECT meilleureOffre,	loginMeilleureOffre FROM enchere WHERE IdItem ='$idItem'  ";  
+        $sql2 = "SELECT * FROM enchere WHERE IdItem ='$idItem'  ";  
         $result2 = mysqli_query($db_handle, $sql2);
         $data2 = mysqli_fetch_assoc($result2); 
 
         $meilleureOffre = isset($data2["meilleureOffre"])?$data2["meilleureOffre"]:0;
+        $idEnchere = $data2["IdEnchere"];
+        $dateFinEnchere = date('d/m/Y--H:i:s', strtotime($data2["dateFin"]));
 
         if (!isset($data2["loginMeilleureOffre"])) // Si aucune offre n'a encore été faite
         {
@@ -29,8 +31,22 @@
             $loginMeilleureOffre = $data2["loginMeilleureOffre"];
         }
 
-        // Récupérer l'id de l'enchere je sais plus pourquoi j'ai mis ça !
-        //...
+        // Si on a fait une enchere auto, on va cocher la case par défaut et rappeler le montant (avec JavaScript)
+        $sql2 = "SELECT * FROM acheteur_enchere WHERE IdEnchere ='$idEnchere' AND loginAcheteur = '$login' ";  
+        $result2 = mysqli_query($db_handle, $sql2);
+        $data2 = mysqli_fetch_assoc($result2);
+        $cocherAuto = 0;
+        $montantMaxRappel = 0;
+
+        if (isset($data2))
+        {
+            if ($data2["EnchereAuto"] == 1)
+            {
+                $cocherAuto = 1;
+                $montantMaxRappel = $data2["EnchereMax"];
+            }
+        }
+
 
 ?>
 <script>
@@ -61,6 +77,22 @@
             {
                 $("#enchereMontant"+numeroIdItemERR).addClass ("is-invalid");
             }
+            if (erreurEnchere == 9)  // enchere max montant trop bas
+            {
+                $("#enchereAutoForm"+numeroIdItemERR).addClass ("is-invalid");
+            }
+
+            // Si on a activé les encheres auto: cocher la case et rappeler le montant
+            var cocherAuto = <?php echo($cocherAuto); ?>;
+            var montantMaxRappel = <?php echo($montantMaxRappel); ?>;
+
+            if (cocherAuto !=0) // encheres auto activées précédemment par l'utilisateur
+            {
+                document.getElementById("enchereAutoCheckbox"+idItem).checked = true;
+                $("#enchereAutoForm"+idItem).slideDown();
+                document.getElementById("enchereAutoMontant").value = montantMaxRappel;
+            }
+
         });
 </script>
 
@@ -91,6 +123,7 @@
                     <?php
                 }
             ?>
+            <p>Fin de l'enchère le: <?php echo($dateFinEnchere); ?> </p>
             <form method="post" action="modal_encheres_traitements.php">
                 <div class="form-group">
                     <label for="enchereMontant">Faire une enchère</label>
@@ -108,8 +141,11 @@
 
                 <div class="form-group acacher" id="enchereAutoForm<?php echo($idItem); ?>">
                     <label for="enchereAutoMontant">Monant maximal</label>
-                    <input type="number" class="form-control" id="enchereAutoMontant" name="autoMax" value="<?php echo($meilleureOffre+1); ?>">
+                    <input type="number" class="form-control" id="enchereAutoMontant" name="autoMax" >
                     <small id="enchereAutoMontantHelp" class="form-text text-muted">Le site va enchérir automatiquement pour vous, sans dépasser votre montant maximal</small>
+                    <div class="invalid-feedback">
+                            Le montant entré doit être supérieur au montant de l'offre actuelle ! 
+                    </div>
                 </div>
 
                 <input type="hidden" name="idItem" value=<?php echo($idItem); ?> >

@@ -36,32 +36,62 @@
         {
             if ($dateDerniereVerif < $data["date"]) // si la dernière vérification a été faite avant la transaction
             {
-                if (isset($data["idEnchere"]))  // si c'est une enchère = on a gagné l'enchère et il faut prévenir l'utilisateur
+                if (isset($data["idEnchere"]))  // si c'est une enchère = on regarde si on a gagné ou perdu l'enchère (transaction refusée) et il faut prévenir l'utilisateur
                 {
-                    
-                    ?>
-                        <script>
-                            $(document).ready(function(){ 
-                                // pour les notifications
-                                var nomProduit = "<?php echo($data["nomProduit"]); ?>";
-                                var prix = <?php echo($data["prix"]); ?>;
-                                $("#notifsDOM").append (`
-                                    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="60000" style="width:280px;">  
-                                        <div class="toast-header">  
-                                            <strong class="mr-auto">Enchère remportée</strong>
-                                            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
+
+                    if ($data["accepteeRefusee"] == 1)  // on a gagné
+                    {
+                        ?>
+                            <script>
+                                $(document).ready(function(){ 
+                                    // pour les notifications
+                                    var nomProduit = "<?php echo($data["nomProduit"]); ?>";
+                                    var prix = <?php echo($data["prix"]); ?>;
+                                    $("#notifsDOM").append (`
+                                        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="60000" style="width:280px;">  
+                                            <div class="toast-header">  
+                                                <strong class="mr-auto">Enchère remportée</strong>
+                                                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="toast-body">
+                                                Vous avez remporté l'enchère sur le produit `+nomProduit+` et avez été automatiquement débité de `+prix+`€
+                                            </div>
                                         </div>
-                                        <div class="toast-body">
-                                            Vous avez remporté l'enchère sur le produit `+nomProduit+` et avez été automatiquement débité de `+prix+`€
+                                    `);
+                                    $('.toast').toast('show');
+                                }); 
+                            </script>
+                        <?php
+                    }
+
+                    else  // on a perdu
+                    {
+                        ?>
+                            <script>
+                                $(document).ready(function(){ 
+                                    // pour les notifications
+                                    var nomProduit = "<?php echo($data["nomProduit"]); ?>";
+                                    var prix = <?php echo($data["prix"]); ?>;
+                                    $("#notifsDOM").append (`
+                                        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="60000" style="width:280px;">  
+                                            <div class="toast-header">  
+                                                <strong class="mr-auto">Enchère perdue</strong>
+                                                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="toast-body">
+                                                Vous avez perdu l'enchère sur le produit `+nomProduit+`
+                                            </div>
                                         </div>
-                                    </div>
-                                `);
-                                $('.toast').toast('show');
-                            }); 
-                        </script>
-                    <?php
+                                    `);
+                                    $('.toast').toast('show');
+                                }); 
+                            </script>
+                        <?php
+                    }
                 }
             }
         }
