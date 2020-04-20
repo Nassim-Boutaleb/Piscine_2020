@@ -1,0 +1,29 @@
+.row
+{
+    margin-left: 60px;
+    margin-right: 20px;
+    margin-top: 50px;
+}
+
+.card
+{
+ height: 25rem;
+}
+#img1
+{
+    height: 15rem;
+    width: 17,5rem;
+}
+.card-text{
+    height: auto;
+}
+
+#card2
+{
+   
+}
+
+#but2
+{
+
+} 

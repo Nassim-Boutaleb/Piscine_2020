@@ -1,5 +1,6 @@
 <link rel="stylesheet" type="text/css" href="Navbars/navbar_style.css">
 
+
 <?php
     if (!isset ($_SESSION["login"])) // Si on est pas connecté
     {
@@ -35,17 +36,17 @@
                 $("#Acheter").attr ({
                     "aria-disabled" : "true",
                     "href" : "#"
-                }).addClass("disabled");
+                }).css("color","grey");
 
                 $("#Vendre").attr ({
                     "aria-disabled" : "true",
                     "href" : "#"
-                }).addClass("disabled");
+                }).css("color","grey");
 
                 $("#panier").attr ({
                     "aria-disabled" : "true",
                     "href" : "#"
-                }).addClass("disabled");
+                }).css("color","grey");
 
             }
 
@@ -69,11 +70,25 @@
                 $("#Vendre").attr ({
                     "aria-disabled" : "true",
                     "href" : "#"
-                }).addClass("disabled");
+                }).css("color","grey");
             }
 
             else if (connecte == 1 && statut != "acheteur") // Si on n'est pas un acheteur (vendeur ou admin)
             {
+                // Supprimer le popover de vendre qui est accsssible
+                $("#ppvVendre").removeAttr("data-toggle");
+                
+                // Bloquer les liens vers acheter et panier
+                $("#Acheter").attr ({
+                    "aria-disabled" : "true",
+                    "href" : "#"
+                }).css("color","grey");
+
+                $("#panier").attr ({
+                    "aria-disabled" : "true",
+                    "href" : "#"
+                }).css("color","grey");
+
                 // popover (pop up)
                 $(function () {
                     $('[data-toggle="popover"]').popover()
@@ -83,20 +98,6 @@
                 $('.popover-dismiss').popover({
                     trigger: 'focus'
                 });
-
-                // Supprimer le popover de vendre qui est accsssible
-                $("#ppvVendre").removeAttr("data-toggle");
-                
-                // Bloquer les liens vers acheter et panier
-                $("#Acheter").attr ({
-                    "aria-disabled" : "true",
-                    "href" : "#"
-                }).addClass("disabled");
-
-                $("#panier").attr ({
-                    "aria-disabled" : "true",
-                    "href" : "#"
-                }).addClass("disabled");
             }
         });
 </script>
@@ -133,9 +134,9 @@
             </li>
             <!--FIN MENU DESCENDANT-->
             <span class="d-inline-block" id="ppvAcheter" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous avec un compte acheteur pour accéder à la page des achats">
-                <li class="nav-item"><a class="nav-link" href="login.php" id="Acheter">Acheter</a></li>
+                <li class="nav-item"><a class="nav-link" href="achat.php" id="Acheter">Acheter</a></li>
             </span>
-            <span class="d-inline-block" id="ppvVendre" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous avec un compte vendeur pour accéder à la page des ventes">
+            <span class="d-inline-block" id="ppvVendre" data-toggle="popover"  data-trigger="focus" data-placement="bottom" data-content="Connectez vous avec un compte vendeur pour accéder à la page des ventes">
                 <li class="nav-item"><a class="nav-link" href="Gestionitem.php"  id="Vendre">Vendre</a></li>
             </span>
 
@@ -152,9 +153,25 @@
 
         <ul class="navbar-nav ml-auto" id="elementsDroite">
             <span class="d-inline-block" id="ppvPanier" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous pour accéder au panier">
-                <li class="nav-item"><a class="nav-link" href="panier.php" id="panier"><i class="fa fa-shopping-cart"></i> Panier
-                        <span class="badge badge-light">3
-                            <!-- FAIRE UN JAVASCRIPT POUR RENDRE LE NOMBRE DYNAMIQUE--></span> <span
+                <li class="nav-item"><a class="nav-link" href="Panier.php" id="panier"><i class="fa fa-shopping-cart"></i> Panier
+                        <span class="badge badge-light">
+                            <!--NOMBRE DYNAMIQUE PHP-->
+                            <?php
+                                    $database = "ecebay"; 
+                                    $db_handle = mysqli_connect('localhost', 'root', 'root' ); 
+                                    $db_found = mysqli_select_db($db_handle, $database);
+                                    $loginA = isset($_SESSION["login"])?$_SESSION["login"]:"notConnected"; 
+                                    if ($db_found) 
+                                    {
+                                        $requete ="SELECT COUNT(*) AS nb FROM acheter_item WHERE loginAcheteur = '$loginA' ";
+                                        $res=mysqli_query($db_handle, $requete);
+                                        
+                                        if($nbArticles=mysqli_fetch_assoc($res)){
+                                            
+                                        echo ($nbArticles["nb"]);}
+                                    }
+?>
+                            </span> <span
                             class="sr-only">(current)</span></a>
 
                 </li>
@@ -175,6 +192,7 @@
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <a class="dropdown-item" href="gerer_compte.php">Mes informations personnelles</a>
                                         <a class="dropdown-item" href="deconnexion.php">Me déconnecter</a>
+
                                     </div>
                                 </li>
                             <?php

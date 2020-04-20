@@ -60,8 +60,11 @@
         if ($error == false)
         {
             // Ajout dans la BDD
-            $sql = "INSERT INTO utilisateur (login,password,nom,prenom,adresse,ville,code_postal,pays,numero_tel,statut) 
-            VALUES ('$login', '$pass', '$nom', '$prenom','$adresse', '$ville', '$cp', '$pays', '$tel', '$statut') ";
+            date_default_timezone_set('Europe/Paris');
+            $dateAjdh = date("Y-m-d H:i:s");
+
+            $sql = "INSERT INTO utilisateur (login,password,nom,prenom,adresse,ville,code_postal,pays,numero_tel,statut,derniereVerif) 
+            VALUES ('$login', '$pass', '$nom', '$prenom','$adresse', '$ville', '$cp', '$pays', '$tel', '$statut','$dateAjdh') ";
 
             $result = mysqli_query($db_handle, $sql);
 

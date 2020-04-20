@@ -4,7 +4,7 @@
             <div class="container">   
                  <div class="row">      
                       <div class="col-lg-8 col-md-8 col-sm-12">       
-                          <h6 class="text-uppercase font-weight-bold">Information additionnelle</h6>       
+                          <h6 class="text-uppercase font-weight-bold">Informations additionnelles</h6>       
                           <p> Projet Piscine 
                               web officiel
                         </p>       
