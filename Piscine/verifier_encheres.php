@@ -66,6 +66,30 @@
                 }
                 else  
                 {
+                    // Débiter la carte qui a été enregistrée au début de l'enchère
+                    $sql145 = "SELECT numeroCarte FROM acheteur_enchere WHERE IdEnchere = '$idEnchere' ";
+                    $result145 = mysqli_query($db_handle, $sql145);
+                    $data145 = mysqli_fetch_assoc($result145);
+                    $numeroCarte = $data145["numeroCarte"];
+
+                    $sql146 = "SELECT * FROM paiement WHERE numerocarte = '$numeroCarte' AND login = '$loginGagnant' ";  
+                    $result146 = mysqli_query($db_handle, $sql146); 
+                    $data146 = mysqli_fetch_assoc($result146);
+                    $creditCarte = $data146["credit"];
+                    $newCredit = $creditCarte-$prix; 
+
+                    $sql147 = "UPDATE paiement SET credit = '$newCredit' WHERE numerocarte ='$numeroCarte' ";  
+                    $result147 = mysqli_query($db_handle, $sql);
+                
+
+                    if (!$result147)
+                    {
+                        $error = 4;
+                        echo ("Une erreur est survenue lors de la mise a jour du crédit");
+                        ?><meta http-equiv="refresh" content="9; url=accueil.php?alertCodeC=2"><?php
+                    }
+                    
+                    
                     // regarder dans acheteur enchere tous ceux qui ont participé et leur ajouter une transaction refusee
                     
                     $sql3 = "SELECT loginAcheteur FROM acheteur_enchere WHERE IdEnchere = '$idEnchere' AND loginAcheteur != '$loginGagnant' " ;

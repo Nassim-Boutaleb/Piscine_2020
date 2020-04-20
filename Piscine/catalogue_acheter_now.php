@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">      
          <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"> 
         
-        <link rel="stylesheet" type="text/css" href="Catalogue.css"> 
+        <link rel="stylesheet" type="text/css" href="Catalogue.css">  
         <link rel="stylesheet" type="text/css" href="styles.css">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>  
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script> 
@@ -48,72 +48,6 @@
             var connecte = <?php echo("$connecte"); ?>;
             var statut = "<?php echo("$statut"); ?>";
 
-            if (connecte == 0) // Si on est pas connecte : empecher l'accès à acheter et vendre et panier
-            {
-                // popover (pop up)
-                $(function () {
-                    $('[data-toggle="popover"]').popover()
-                });
-
-                // annuler popover au clic
-                $('.popover-dismiss').popover({
-                    trigger: 'focus'
-                });
-                
-                // Désactiver les liens
-               
-
-                $("#ajout").attr ({
-                    "aria-disabled" : "true",
-                    
-                }).addClass("disabled");
-
-                
-
-            }
-
-            else if (connecte == 1 && statut == "acheteur") // Si on est un acheteur
-            {
-                // popover (pop up)
-                $(function () {
-                    $('[data-toggle="popover"]').popover()
-                });
-
-                // annuler popover au clic
-                $('.popover-dismiss').popover({
-                    trigger: 'focus'
-                });
-
-                // désactiver les popovers de Achat et panier qui sont accssibles aux acheteurs
-                
-                $("#ppvajout").removeAttr("data-toggle");
-                
-                // Bloquer le lien vers vendre
-                
-            }
-
-            else if (connecte == 1 && statut != "acheteur") // Si on n'est pas un acheteur (vendeur ou admin)
-            {
-                // popover (pop up)
-                $(function () {
-                    $('[data-toggle="popover"]').popover()
-                });
-
-                // annuler popover au clic
-                $('.popover-dismiss').popover({
-                    trigger: 'focus'
-                });
-
-                // Supprimer le popover de vendre qui est accsssible
-                $("#ppvajout").removeAttr("data-toggle");
-                
-                // Bloquer les liens vers acheter et panier
-                $("#ajout").attr ({
-                    "aria-disabled" : "true",
-                    
-                }).addClass("disabled");
-
-            }
         });
 </script>
            
@@ -139,17 +73,19 @@
                 ?>
 
                 
-            <div class="container" id="affarticle">
-                <figure class="figure">
-                    <img src="<?php echo $data["Image"];?>" alt="Photo Article" width="400" height="300" class="figure-img img-fluid img-thumbnail rounded">
-                    <figcaption class="figure-caption float-right">
-                        <h2><?php echo $data["Nom"]."  ";?></h2>
-                    <p>Prix : <?php echo $data["Prix"];?>€</p>
-                
-                    <p>Type de vente : <?php echo $data["TypeVente"];?></p>
-                    <p>Catégorie : <?php echo $data["Categorie"];?></p> 
-                    <p class="lead" id="descriptionitem">Description : <?php echo $data["Description"];?></p></figcaption>
-           
+<div class="card mb-3" style="max-width: 570px; margin-left:450px; height: 240px ;">
+<figure class="figure">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img src="<?php echo $data["Image"];?>" class="card-img" style="width: 265px; height: 237px ;" alt="Photo Article">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body" style="margin-left:100px; margin-top:-18px; width:320px;">
+        <h5 class="card-title"><?php echo $data["Nom"]."  ";?> </h5>
+        <p class="card-text">Prix : <?php echo $data["Prix"];?>€</p>
+        <p class="card-text">Type de vente : <?php echo $data["TypeVente"];?></p>
+        <p class="card-text">Catégorie : <?php echo $data["Categorie"];?></p> 
+        <p class="card-text"><small class="text-muted">Description : <?php echo $data["Description"];?></small></p>
             <?php
             
                 if ($statut == "acheteur")
@@ -170,7 +106,9 @@
                     }
                     ?>
                     
-
+                    </div>
+    </div>
+  </div>
                     <?php
                         
                     
@@ -194,11 +132,11 @@
                         $result2 = mysqli_query($db_handle, $sql2);
                         if($result2)
                         {
-                            echo"Article ajouté au panier";
+                            //echo"Article ajouté au panier";
                         }
                         else
                         {
-                            echo"L'article  est déja dans le panier";
+                            //echo"L'article  est déja dans le panier";
                         }    
                         }
                     }

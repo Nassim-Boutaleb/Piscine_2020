@@ -25,10 +25,7 @@
         <?php require("Navbars/navbar_def.php");  ?>
 
        
-            <blockquote class="blockquote text-center">
-                <p class="mb-0">Articles à negocier</p>
-                <footer class="blockquote-footer">Une selection d'articles hors du commun </footer>
-            </blockquote>
+            
 <?php
     if (!isset ($_SESSION["login"])) // Si on est pas connecté
     {
@@ -40,6 +37,10 @@
         $connecte = 1;
         $statut = $_SESSION["statut"];
     }
+
+    // Récupérer l'erreur de la modal meilleure offre et l'item concerné
+    $erreurMO = isset($_GET["erreurMO"])?$_GET["erreurMO"]:"0";
+    $numeroIdItemERRMO = isset($_GET["IdItemErrMO"])?$_GET["IdItemErrMO"]:"0";
 ?>
 
 <script>
@@ -48,74 +49,23 @@
             var connecte = <?php echo("$connecte"); ?>;
             var statut = "<?php echo("$statut"); ?>";
 
-            if (connecte == 0) // Si on est pas connecte : empecher l'accès à acheter et vendre et panier
+            // Récupérer les erreurs
+            var erreurMO = <?php echo($erreurMO); ?>;
+            var numeroIdItemERRMO = <?php echo($numeroIdItemERRMO); ?>;
+
+            // Rouvrir la modal meilleure offre (la pop up) si besoin 
+            if (erreurMO == 5) // montant de l'enchère trop petit
             {
-                // popover (pop up)
-                $(function () {
-                    $('[data-toggle="popover"]').popover()
-                });
-
-                // annuler popover au clic
-                $('.popover-dismiss').popover({
-                    trigger: 'focus'
-                });
-                
-                // Désactiver les liens
-               
-
-                $("#ajout").attr ({
-                    "aria-disabled" : "true",
-                    
-                }).addClass("disabled");
-
-                
-
+                //alert ("enchereID: "+numeroIdItem);
+                $("#BtnMO"+numeroIdItemERRMO).trigger ("click"); // réafficher la fenêtre (comme si on avait cliqué sur le bonton enchère de l'item concerné)
             }
 
-            else if (connecte == 1 && statut == "acheteur") // Si on est un acheteur
-            {
-                // popover (pop up)
-                $(function () {
-                    $('[data-toggle="popover"]').popover()
-                });
-
-                // annuler popover au clic
-                $('.popover-dismiss').popover({
-                    trigger: 'focus'
-                });
-
-                // désactiver les popovers de Achat et panier qui sont accssibles aux acheteurs
-                
-                $("#ppvajout").removeAttr("data-toggle");
-                
-                // Bloquer le lien vers vendre
-                
-            }
-
-            else if (connecte == 1 && statut != "acheteur") // Si on n'est pas un acheteur (vendeur ou admin)
-            {
-                // popover (pop up)
-                $(function () {
-                    $('[data-toggle="popover"]').popover()
-                });
-
-                // annuler popover au clic
-                $('.popover-dismiss').popover({
-                    trigger: 'focus'
-                });
-
-                // Supprimer le popover de vendre qui est accsssible
-                $("#ppvajout").removeAttr("data-toggle");
-                
-                // Bloquer les liens vers acheter et panier
-                $("#ajout").attr ({
-                    "aria-disabled" : "true",
-                    
-                }).addClass("disabled");
-
-            }
         });
 </script>
+<blockquote class="blockquote text-center">
+                <p class="mb-0">Articles à negocier</p>
+                <footer class="blockquote-footer">Une selection d'articles hors du commun </footer>
+            </blockquote>
            
 
         <?php
@@ -129,7 +79,8 @@
         if ($db_found) 
         {
             
-            $sql="SELECT * FROM item WHERE TypeVente='Meilleure Offre' AND afficher='1'";           $result = mysqli_query($db_handle, $sql);
+            $sql="SELECT * FROM item WHERE TypeVente='Meilleure Offre' AND afficher='1'";           
+            $result = mysqli_query($db_handle, $sql);
 
             while ($data = mysqli_fetch_assoc($result))
             {
@@ -142,25 +93,27 @@
                                 
                 ?>
 
-                
-            <div class="container" id="affarticle">
-                <figure class="figure">
-                    <img src="<?php echo $data["Image"];?>" alt="Photo Article" width="400" height="300" class="figure-img img-fluid img-thumbnail rounded">
-                    <figcaption class="figure-caption float-right">
-                        <h2><?php echo $data["Nom"]."  ";?></h2>
-                    <p>Prix : <?php echo $data["Prix"];?>€</p>
-                
-                    <p>Type de vente : <?php echo $data["TypeVente"];?></p>
-                    <p>Catégorie : <?php echo $data["Categorie"];?></p> 
-                    <p class="lead" id="descriptionitem">Description : <?php echo $data["Description"];?></p></figcaption>
+<div class="card mb-3" style="max-width: 570px; margin-left:450px; height: 240px ;">
+<figure class="figure">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img src="<?php echo $data["Image"];?>" class="card-img" style="width: 265px; height: 237px ;" alt="Photo Article">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body" style="margin-left:100px; margin-top:-18px; width:320px;">
+        <h5 class="card-title"><?php echo $data["Nom"]."  ";?> </h5>
+        <p class="card-text">Prix : <?php echo $data["Prix"];?>€</p>
+        <p class="card-text">Type de vente : <?php echo $data["TypeVente"];?></p>
+        <p class="card-text">Catégorie : <?php echo $data["Categorie"];?></p> 
+        <p class="card-text"><small class="text-muted">Description : <?php echo $data["Description"];?></small></p>
            
-            <?php
+                <?php
             
                 if ($statut == "acheteur")
                 {
                     if ($data["TypeVente"] == "Meilleure Offre") // Si c'est une meilleure offre alors pop up
                     {
-                        ?><button type="submit" name="negocier" value="<?php echo($data["NumeroID"]); ?>" class="btn btn-secondary " data-toggle="modal" data-target="#offreID<?php echo($data["NumeroID"]); ?>">Negocier</a></button>
+                        ?><button type="submit" id="BtnMO<?php echo($data["NumeroID"]); ?>" name="negocier" value="<?php echo($data["NumeroID"]); ?>" class="btn btn-outline-primary" data-toggle="modal" data-target="#offreID<?php echo($data["NumeroID"]); ?>">Negocier</button>
                         
                             <div class="modal fade" id="offreID<?php echo($data["NumeroID"]); ?>" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                 <?php require ("modal_meilleure_offre.php"); ?>
@@ -170,23 +123,22 @@
                     else 
                     {
                         ?>
-                            <button  class="btn btn-outline-primary"> <a href="?action=ajouterpanier&amp;id=<?php echo $data["NumeroID"];?> " >Ajouter au panier</a></button>
+                            <button  class="btn btn-outline-primary"> <a href="?action=ajouterpanier&amp;id=<?php echo $data["NumeroID"];?> " >Ajouter au panier</button>
                         <?php
                     }
                     ?>
-                    
-
-                    <?php
-                        
-                    
+ </div>
+    </div>
+  </div>
+                    <?php             
                 }
 
-                                         ?>
-            </figure>              
+                ?>
+                </figure>              
                 <br>
-            </div>
-            <br>  
-            <?php
+                </div>
+                <br>                     
+                <?php
 
             }  
             if(isset($_GET['action'])){
@@ -196,24 +148,24 @@
                     $login=$_SESSION["login"];
                     $NumID=$_GET['id'];
                                 
-                        $sql2="INSERT INTO acheter_item(loginAcheteur,NumeroIDItem) VALUES ('$login','$NumID')";
-                        $result2 = mysqli_query($db_handle, $sql2);
-                        if($result2)
-                        {
-                            echo"Article ajouté au panier";
-                        }
-                        else
-                        {
-                            echo"L'article  est déja dans le panier";
-                        }    
-                        }
+                    $sql2="INSERT INTO acheter_item(loginAcheteur,NumeroIDItem) VALUES ('$login','$NumID')";
+                    $result2 = mysqli_query($db_handle, $sql2);
+                    if($result2)
+                    {
+                        //echo"Article ajouté au panier";
                     }
+                    else
+                    {
+                        //echo"L'article  est déja dans le panier";
+                    }    
+                }
+            }
         }
         ?>             
-    </div>
-    </body>
+        </div>
+        </body>
 
-    <footer>
-        <?php require("Footer.php");  ?>
-    </footer>
+        <footer>
+            <?php require("Footer.php");  ?>
+        </footer>
     </html>

@@ -38,7 +38,11 @@
         
             // Récupérer l'erreur de la modal enchère et l'item concerné
             $erreurEnchere = isset($_GET["erreurEnch"])?$_GET["erreurEnch"]:"0";
-            $numeroIdItemERR = isset($_GET["NumeroId"])?$_GET["NumeroId"]:"0";       
+            $numeroIdItemERR = isset($_GET["NumeroId"])?$_GET["NumeroId"]:"0";  
+            
+            // Récupérer l'erreur de la modal meilleure offre et l'item concerné
+            $erreurMO = isset($_GET["erreurMO"])?$_GET["erreurMO"]:"0";
+            $numeroIdItemERRMO = isset($_GET["IdItemErrMO"])?$_GET["IdItemErrMO"]:"0";
         ?>
 
         <script type="text/javascript">      
@@ -64,9 +68,14 @@
                   $("#AlerteD2").slideDown();
                 }
 
-                // Récupérer les erreurs
+                // Récupérer les erreurs (enchères)
                 var erreurEnchere = <?php echo($erreurEnchere); ?>;
                 var numeroIdItemERR = <?php echo($numeroIdItemERR); ?>;
+                
+                // Récupérer les erreurs (meilleures offres)
+                var erreurMO = <?php echo($erreurMO); ?>;
+                var numeroIdItemERRMO = <?php echo($numeroIdItemERRMO); ?>;                
+                
 
                 // Rouvrir la modal enchere (la pop up) si besoin 
                 if (erreurEnchere == 5) // montant de l'enchère trop petit
@@ -74,6 +83,13 @@
                     //alert ("enchereID: "+numeroIdItem);
                     $("#BtnEnchere"+numeroIdItemERR).trigger ("click"); // réafficher la fenêtre (comme si on avait cliqué sur le bonton enchère de l'item concerné)
                 }  
+
+                // Rouvrir la modal meilleure offre (la pop up) si besoin 
+                if (erreurMO == 5) // montant de l'enchère trop petit
+                {
+                    $("#myTab li:nth-child(2) a").tab('show');
+                    $("#BtnMO"+numeroIdItemERRMO).trigger ("click"); // réafficher la fenêtre (comme si on avait cliqué sur le bonton enchère de l'item concerné)
+                }
             }); 
         </script>
     </head> 
@@ -117,13 +133,13 @@
                 <!--Panier-->
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="tab_enchere" data-toggle="tab" href="#enchere" role="tab" aria-controls="enchere" aria-selected="true">Enchere</a>
+                    <a class="nav-link active" id="tab_enchere" data-toggle="tab" href="#enchere" role="tab" aria-controls="enchere" aria-selected="true" style="color:black;">Enchere</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="tab_offre" data-toggle="tab" href="#offre" role="tab" aria-controls="offre" aria-selected="false">Meilleure Offre</a>
+                    <a class="nav-link" id="tab_offre" data-toggle="tab" href="#offre" role="tab" aria-controls="offre" aria-selected="false" style="color:grey;">Meilleure Offre</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="tab_achat" data-toggle="tab" href="#achat" role="tab" aria-controls="achat" aria-selected="false">Achats immédiats</a>
+                    <a class="nav-link" id="tab_achat" data-toggle="tab" href="#achat" role="tab" aria-controls="achat" aria-selected="false" style="color:grey;">Achats immédiats</a>
                 </li>
                 </ul>
                 <div class="tab-content" id="myTabContent">
@@ -176,7 +192,7 @@
                                 ?>
                                 <div class="container" id="affarticle">
                                     <figure class="figure">
-                                        <img src="<?php echo $data["Image"];?>" alt="Photo Article" width="400" height="300" class="figure-img img-fluid img-thumbnail rounded">
+                                        <img src="<?php echo $data2["Image"];?>" alt="Photo Article" width="400" height="300" class="figure-img img-fluid img-thumbnail rounded">
                                         <figcaption class="figure-caption float-right">
                                             <h2><?php echo $data2["Nom"]."  ";?></h2>
                                             <p>Prix : <?php echo $data2["Prix"];?>€</p>
@@ -189,7 +205,7 @@
 
                                 <br>
                                 <button class="btn btn-outline-primary"><a href="?action=Supprimer&amp;TV=O&amp;id=<?php echo $data2["NumeroID"];?>&amp;PrixV=<?php echo $data2["Prix"]?>"> Supprimer</a></button>
-                                <button type="submit" name="negocier" value="<?php echo($data2["NumeroID"]); ?>" class="btn btn-secondary " data-toggle="modal" data-target="#offreID<?php echo($data2["NumeroID"]); ?>">Negocier</a></button>    
+                                <button id="BtnMO<?php echo($data2["NumeroID"]); ?>" type="submit" name="negocier" value="<?php echo($data2["NumeroID"]); ?>" class="btn btn-secondary " data-toggle="modal" data-target="#offreID<?php echo($data2["NumeroID"]); ?>">Negocier</a></button>    
                                 
                                 <!-- Modal offre -->
                                 <div class="modal fade" id="offreID<?php echo($data2["NumeroID"]); ?>" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -230,7 +246,7 @@
                                     <?php
                                                 
                                 }
-                                echo"$Total";
+                                //echo"$Total";
                                 $_SESSION["TotalPanier"]=$Total;
                             ?>
                             <button class="btn btn-outline-primary"><a href="paiement.php"> Paiement</a></button>
@@ -248,8 +264,7 @@
                         
                         if ($typeDeVente == "E")
                         {
-                            ?> <script> alert ("Hey!"); </script>
-                            <meta http-equiv="refresh" content="1; url=Panier.php?alertCode2=6"> <?php
+                            ?> <meta http-equiv="refresh" content="1; url=Panier.php?alertCode2=6"> <?php
                         }
                         else if ($typeDeVente == "O")
                         {
@@ -259,7 +274,7 @@
                             $result4 = mysqli_query($db_handle, $sql4);
                             if($result4)
                             {
-                                echo "Article supprimé";
+                                //echo "Article supprimé";
                                 $sql5="UPDATE item SET afficher='1' WHERE NumeroID='$NumID'";
                                 $result5=mysqli_query($db_handle, $sql5);
 

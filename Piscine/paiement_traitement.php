@@ -12,7 +12,7 @@
     if (isset($_POST["useBtn"])&&$_POST["useBtn"]="use")
     {
         $numeroCarte = $_POST["useCarte"];
-        echo ("on utilise la carte".$_POST["useCarte"]);
+        //echo ("on utilise la carte".$_POST["useCarte"]);
 
         //identifier le nom de base de données 
         $database = "ecebay"; 
@@ -37,15 +37,15 @@
             if($totalPrix>=$creditCarte)  // c'est trop cher : la transaction est refusée !
             {
                 $error = 2;
-                echo ("Paiement refusé: solde insuffisant");
+                echo ("Paiement refusé: solde insuffisant:  totalPrix= $totalPrix / creditCarte = $creditCarte");
                 ?><meta http-equiv="refresh" content="1; url=paiement.php?alertCodeC=1"><?php
             }
             else  // paiement accepté: on est débité (MAJ de la table), supprimer l'item de la table item (et par voie de conséquence du panier)
             {
                 $error=0;
-                echo ("Paiement accepté"); 
+                //echo ("Paiement accepté"); 
 
-                $newCredit = 500-$totalPrix;
+                $newCredit = $creditCarte-$totalPrix;
                 $sql = "UPDATE paiement SET credit = '$newCredit' WHERE numerocarte ='$numeroCarte' ";  
                 $result = mysqli_query($db_handle, $sql);
 
@@ -102,7 +102,8 @@
 
         if ($error == 0)
         {
-            echo ("Aucune erreur, redirection en cours");
+            //echo ("Aucune erreur, redirection en cours");
+            ?><meta http-equiv="refresh" content="1; url=accueil.php?alertCode=15"><?php
         }
 
         
@@ -123,6 +124,7 @@
         //____________________________________
 
         // Fontion de prévérification de la carte bancaire
+        // Fontion de prévérification de la carte bancaire
         function validite($numerocarte,$longueur)
         { 
             // On passe à la fonction la variable contenant le numéro à vérifier
@@ -131,7 +133,7 @@
             if ((strlen($numerocarte)==$longueur) && preg_match("#[0-9]{".$longueur."}#i", 
             $numerocarte))
             {
-                echo ("C'est ok ici");
+                //echo ("C'est ok ici");
                 // si la longueur est bonne et que l'on n'a que des chiffres
         
                 /* on décompose le numéro dans un tableau  */
@@ -227,7 +229,7 @@
                 else  // paiement accepté: on est débité (MAJ de la table), supprimer l'item de la table item (et par voie de conséquence du panier)
                 {
                     $error=0;
-                    echo ("Paiement accepté"); 
+                    //echo ("Paiement accepté"); 
 
                     $newCredit = 500-$totalPrix;
                     $sql = "UPDATE paiement SET credit = '$newCredit' WHERE numerocarte ='$numerocarte' ";  
@@ -289,7 +291,7 @@
 
         if ($error == 0)
         {
-            echo ("Aucune erreur, redirection en cours");
+            //echo ("Aucune erreur, redirection en cours");
             ?><meta http-equiv="refresh" content="0; url=accueil.php?alertCode=15"><?php
         }
     }

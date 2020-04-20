@@ -18,31 +18,66 @@
         }
     </style>
 
-    <script type="text/javascript">
-    $(document).ready(function() {
-        $("#modifierImage").on("click",function(){  // Cliquer sur l'encoche modifier image= activer le champ
-          
-            if ($("#champModifierImage").attr("disabled") == "disabled")
-            {
-                $("#champModifierImage").removeAttr("disabled");
-            }
-            else
-            {
-                $("#champModifierImage").prop("disabled", true).trigger("click");
-            }
-        });   
+    <?php $alertCode = isset($_GET["alertCode"])?$_GET["alertCode"] : "0" ; ?>
 
-        $("#typevente").on("click",function(){
-            if (document.getElementById("typevente").selectedIndex == 0)
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#modifierImage").on("click",function(){  // Cliquer sur l'encoche modifier image= activer le champ
+            
+                if ($("#champModifierImage").attr("disabled") == "disabled")
+                {
+                    $("#champModifierImage").removeAttr("disabled");
+                }
+                else
+                {
+                    $("#champModifierImage").prop("disabled", true).trigger("click");
+                }
+            });   
+
+            $("#typevente").on("click",function(){
+                if (document.getElementById("typevente").selectedIndex == 0)
+                {
+                    $("#finEnchere").slideDown();
+                    document.getElementById("timeFinEnchere").required = true;
+                    document.getElementById("dateFinEnchere").required = true;
+                }
+                else
+                {
+                    $("#finEnchere").slideUp();
+                    document.getElementById("timeFinEnchere").required = false;
+                    document.getElementById("dateFinEnchere").required = false;
+                }
+            });
+
+            // affichage d'une alerte pour la déconnexion
+            var alertCode = <?php echo($alertCode); ?>;
+
+            if (alertCode == 101) // on affiche le succès de déconnexion
             {
-                $("#finEnchere").slideDown();
+                $("#texteAlerte").text("Article mis en vente !");
+                $("#Alerte").slideDown();
             }
-            else
+            if (alertCode == 105) // on affiche le succès de déconnexion
             {
-                $("#finEnchere").slideUp();
+                $("#texteAlerteD").text("Une erreur est survenue dans la BDD");
+                $("#AlerteD").slideDown();
+            }
+            if (alertCode == 105) // on affiche le succès de déconnexion
+            {
+                $("#texteAlerteD").text("Veuillez remplir tous les champs");
+                $("#AlerteD").slideDown();
+            }
+            if (alertCode == 115) // on affiche le succès de déconnexion
+            {
+                $("#texteAlerte").text("Article modifié");
+                $("#Alerte").slideDown();
+            }
+            if (alertCode == 119) // on affiche le succès de déconnexion
+            {
+                $("#texteAlerte").text("Article supprimé");
+                $("#Alerte").slideDown();
             }
         });
-    });
     </script>
 
     <!-- Empecher l'accès à la page si on est pas vendeur (blindage côté serveur) -->
@@ -63,18 +98,34 @@
 
     <?php require("Navbars/navbar_def.php");  ?>
 
+    <!-- Fenetres d'alertes -->
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" id="Alerte">
+          <strong id="texteAlerte"></strong> 
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
 
-    <div class="card " style="width: 35rem;height: 20rem;">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="AlerteD">
+          <strong id="texteAlerteD"></strong> 
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+
+    <!-- Contenu -->
+    <div class="card " style="width: 55rem;height: 30rem;">
         <div class="card-body">
-            <h2 class="card-title">Options</h2>
-                <button type="button" class="btn btn-secondary float-right"><a href="?action=ajout">Ajouter un produit</a></button>
-                <br>
-                <br>
-                <br>
-                <br>
-                <button type="button" class="btn btn-secondary float-right"><a href="?action=modifsupp">Modifier ou supprimer un produit</a></button>
+            <h2 class="card-title" style="margin-left: 385px">Options</h2>
+                <button type="button" class="btn btn-secondary float-left" style="margin-top: 90px"><a href="?action=ajout">Ajouter un produit</a></button>
+
+                <button type="button" class="btn btn-secondary float-none" style="margin-top: 90px; margin-left: 110px"><a href="?action=modifsupp">Modifier ou supprimer un produit</a></button>
+
+                <button type="button" class="btn btn-secondary float-right" style="margin-top: 90px"><a href="?action=negotiations">Voir negotiations en cours</a></button>
         </div>
     </div>
+    
 
     <!--TRAITEMENT DE L'AJOUT-->
 
@@ -101,8 +152,8 @@
                     
                     if (move_uploaded_file($_FILES['Photoitem']['tmp_name'], $uploadfile)) 
                     {
-                        echo "Le fichier est valide, et a été téléchargé
-                            avec succès. Voici plus d'informations :\n";
+                        /*echo "Le fichier est valide, et a été téléchargé
+                            avec succès. Voici plus d'informations :\n"; */
                     } 
                     else 
                     {
@@ -154,12 +205,12 @@
                                     $resultE = mysqli_query($db_handle, $sqlE);
                                     if ($resultE)
                                     {
-                                        echo"Article ajouté";
-                                        header("refresh:2, url=Gestionitem.php");
+                                        //echo"Article ajouté";
+                                        ?><meta http-equiv="refresh" content="0; url=gestionitem.php?alertCode=101"><?php
                                     }
                                     else
                                     {
-                                        echo"Erreur ajout enchère";
+                                        //echo"Erreur ajout enchère";
                                     }
                                 }
                                 /* Si L'article est de type meilleure offre remplir la table*/
@@ -175,8 +226,8 @@
                                     $sqlO="INSERT INTO meilleure_offre(IdItemOffre,nbOffres,PrixVendeur,Consensus) VALUES('$numeroIDItem','0','$Prix','0')"; 
                                     $resultO=mysqli_query($db_handle, $sqlO);
                                     if($resultO){
-                                        echo"Article ajouté";
-                                        header("refresh:2, url=Gestionitem.php");
+                                        //echo"Article ajouté";
+                                        ?><meta http-equiv="refresh" content="0; url=gestionitem.php?alertCode=101"><?php
                                     }
                                     else
                                     {
@@ -187,25 +238,29 @@
 
                                 else 
                                 {
-                                    echo"Article ajouté";
-                                    header("refresh:2, url=Gestionitem.php");
+                                    //echo"Article ajouté";
+                                    ?><meta http-equiv="refresh" content="0; url=gestionitem.php?alertCode=101"><?php
                                 }
-                                echo"Article ajouté";?>
-                                <meta http-equiv="refresh" content="1; url=Gestionitem.php?alertCode2=1"> <?php
+                                //echo"Article ajouté";
+                                ?>
+                                <meta http-equiv="refresh" content="0; url=Gestionitem.php?alertCode=101"> <?php
                             }
                             else
                             {
                                 echo"L'article n'a pas pu être ajouté";
+                                ?><meta http-equiv="refresh" content="0; url=gestionitem.php?alertCode=105"><?php
                             }
                         }
                         else
                         {
                             echo"BDD inexistante";
+                            ?><meta http-equiv="refresh" content="0; url=gestionitem.php?alertCode=105"><?php
                         }
                     } 
                     else 
                     {
                         echo"veuillez remplir tout les champs";
+                        ?><meta http-equiv="refresh" content="0; url=gestionitem.php?alertCode=109"><?php
                     }
                 }
         ?>
@@ -242,7 +297,7 @@
                 <select id="typevente" name="typevente">
                     <option value="Enchere">Enchère</option>
                     <option value="Meilleure Offre">Meilleure Offre</option>
-                    <option value="Achat direct">Achat immédiat</option>
+                    <option value="Achat direct" selected>Achat immédiat</option>
                 </select>
             </div>
             <div class="form-row" id="finEnchere" >
@@ -262,10 +317,7 @@
                 <label for="Photoitem">Photo de l'article</label>
                 <input type="file" class="form-control-file" name="Photoitem" accept=".jpg, .jpeg, .png">
             </div>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" name="Check1">
-                <label class="form-check-label" for="Check1">Validation</label>
-            </div>
+    
             <button type="submit" class="btn btn-primary" name='submit'>Soumettre</button>
         </form>
     </div>
@@ -284,7 +336,7 @@
                 $db_found = mysqli_select_db($db_handle, $database);
                 $vendeur = $_SESSION["login"]; 
                  
-                if($_SESSION["statut"] == "admin")
+                if($_SESSION["statut"] == "administrateur")
                 {
                     $sql="SELECT * FROM item";
                 }
@@ -388,8 +440,8 @@
 
                             
                             if (move_uploaded_file($_FILES['PhotoitemR']['tmp_name'], $uploadfile)) {
-                                echo "Le fichier est valide, et a été téléchargé
-                                    avec succès. Voici plus d'informations :\n";
+                                /*echo "Le fichier est valide, et a été téléchargé
+                                    avec succès. Voici plus d'informations :\n"; */
                             } else {
                                 echo "Attaque potentielle par téléchargement de fichiers.
                                     Voici plus d'informations :\n";
@@ -409,7 +461,8 @@
                         $sql4="UPDATE item SET Nom='$nom',Categorie='$Categorie',Description='$Description',Prix='$Prix',TypeVente='$type',Image='$Photo' WHERE NumeroID='$id'";
                         $result4 = mysqli_query($db_handle, $sql4);
                         if($result4){
-                            echo"Article modifié";
+                            //echo"Article modifié";
+                            ?><meta http-equiv="refresh" content="0; url=gestionitem.php?alertCode=115"><?php
                         }
 
                     }
@@ -426,12 +479,102 @@
                 {
                     
                     $id=$_GET['id'];
-                    $sql2="DELETE FROM item WHERE NumeroID=$id";
+                    $sql3="SELECT * FROM item WHERE NumeroID='$id'";
+                    $result3=mysqli_query($db_handle,$sql3);
+                    $data3=mysqli_fetch_assoc($result3);
+                    $typevente=$data3["TypeVente"];
+                    if($typevente=='Meilleure Offre')
+                    {
+                        $sql6="SELECT * FROM meilleure_offre WHERE IdItemOffre='$id' ";
+                        $result6=mysqli_query($db_handle, $sql6);
+
+                        if($data6=mysqli_fetch_assoc($result6))
+                        {   
+                            $idOffre=$data6["IdOffre"];
+                            $sql7="DELETE FROM acheteur_offre WHERE IdOffre='$idOffre'";
+                            $result7=mysqli_query($db_handle, $sql7);
+
+                            if($result7)
+                           {   
+
+                                $sql8="DELETE FROM meilleure_offre  WHERE IdItemOffre='$id'";
+                                $result8=mysqli_query($db_handle,$sql8);
+                                if($result8)
+                                {
+                                    $sql2="DELETE FROM item WHERE NumeroID=$id";
+                                    $result2 = mysqli_query($db_handle, $sql2);
+                                    echo"Article supprimé";
+                                }      
+                            }
+                        } 
+
+                    }
+                    else{
+                        $sql2="DELETE FROM item WHERE NumeroID=$id";
                     $result2 = mysqli_query($db_handle, $sql2);
+                    $data2=mysqli_fetch_assoc($result2);
+                    }
+                    ?><meta http-equiv="refresh" content="0; url=gestionitem.php?alertCode=119"><?php
                 }                
+            }
+            
+            else if($_GET['action']=='negotiations')
+            {
+                $database = "ecebay";
+                $db_handle = mysqli_connect('localhost', 'root', 'root'); 
+                $db_found = mysqli_select_db($db_handle, $database);
+                if ($db_found) 
+                {
+                        $vendeur = $_SESSION["login"]; 
+                 
+                        if($_SESSION["statut"] == "administrateur")
+                        {
+                            $sql="SELECT * FROM item";
+                        }
+                            else 
+                        {
+                    //echo ($vendeur);
+                            $sql="SELECT * FROM item WHERE vendeur='$vendeur' ";
+                        }
+
+
+                        $sqlA="SELECT * FROM item WHERE TypeVente='Meilleure Offre' AND afficher='0' AND vendeur='$vendeur'";
+                        $resultA=mysqli_query($db_handle,$sqlA);
+                     
+                        ?>
+                         <br>
+                        <h3 style="text-align: center;">Liste des articles en cours de négotiations </h3>
+                        <?php
+
+                        while($dataA=mysqli_fetch_assoc($resultA))
+                        {
+                            $idItem=$dataA["NumeroID"];
+
+                            ?>
+
+                            <div class="container" id="listeNegotiations">
+                    
+                            <?php echo $dataA["Nom"];?>
+                            <br>
+                            <button type="submit" name="negocier" value="$id" class="btn btn-secondary " data-toggle="modal" data-target="#offreID<?php echo($idItem); ?>">Negocier</a></button>
+
+                            <div class="modal fade" id="offreID<?php echo($idItem); ?>" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <?php require ("modal_meilleure_offre_vendeur.php"); ?>
+                            </div>
+
+
+                            <br><br>
+                            </div> 
+                            <?php
+
+                        }
+                    
+                }
+                           
             }
         } // fin if isset action
         ?>
+        
 
 </body>
 <footer>

@@ -39,15 +39,17 @@
                 
                 $nomProduit=$data1["Nom"];
                  //echo"OK2";
-                $sql2="SELECT * FROM meilleure_offre WHERE IdItemOffre='$idItem'";
+                $sql2="SELECT * FROM acheteur_offre WHERE IdOffre='$idOffre'";
                 $result2=mysqli_query($db_handle,$sql2);
                 $data2=mysqli_fetch_assoc($result2);
 
+
                 if($result2){
                     //echo"OK3";
-                    $PrixV=$data2["PrixVendeur"];
+                    $PrixV=$data2["prixAcheteur"];
+                    $loginA=$data2["login"];
 
-                    $sql3 = "INSERT INTO transactions_effectuees (login,idItem,prix,typeVente,idMeilleureOffre,date,accepteeRefusee,nomProduit) VALUES ('$login','$idItem','$PrixV','Meilleure Offre','$idOffre',NOW(),'1','$nomProduit')";
+                    $sql3 = "INSERT INTO transactions_effectuees (login,idItem,prix,typeVente,idMeilleureOffre,date,accepteeRefusee,nomProduit) VALUES ('$loginA','$idItem','$PrixV','Meilleure Offre','$idOffre',NOW(),'1','$nomProduit')";
 
                     $result3=mysqli_query($db_handle,$sql3);
 
@@ -59,7 +61,7 @@
                         $data145 = mysqli_fetch_assoc($result145);
                         $numeroCarte = $data145["carte"];
 
-                        $sql146 = "SELECT * FROM paiement WHERE numerocarte = '$numeroCarte' AND login = '$login' ";  
+                        $sql146 = "SELECT * FROM paiement WHERE numerocarte = '$numeroCarte' AND login = '$loginA' ";  
                         $result146 = mysqli_query($db_handle, $sql146); 
                         $data146 = mysqli_fetch_assoc($result146);
                         $creditCarte = $data146["credit"];
@@ -76,15 +78,18 @@
                             ?><meta http-equiv="refresh" content="9; url=accueil.php?alertCodeC=2"><?php
                         }
                         
-                        //echo"OK4";
+                        
+                        
+                        echo"OK4";
                         $sql4="DELETE FROM item WHERE NumeroID='$idItem'";
                         $result4=mysqli_query($db_handle,$sql4);
                         if($result4)
                         {
-                            $sql4="DELETE FROM acheteur_offre WHERE IdItemOffre='$idItem";
+                            $sql5="DELETE FROM acheteur_offre WHERE IdOffre='$idOffre'";
+                            $sql6="DELETE FROM meilleure_offre WHERE IdOffre='$idOffre'";
                         //echo"OK5";
                         ?>
-                        <meta http-equiv="refresh" content="1; url=Panier.php"> 
+                        <meta http-equiv="refresh" content="1; url=Gestionitem.php"> 
                         <?php
                         }
                     }

@@ -33,6 +33,7 @@
         $resultA = mysqli_query($db_handle, $sqlA);
         if($resultA){
             $dataA = mysqli_fetch_assoc($resultA); 
+            
         
 
             if ($dataA["nbOffres"]==0) // Si aucune offre n'a encore été faite
@@ -46,87 +47,124 @@
              else // Si une offre a déja été faite 
             {
                 $newnegotiation = false;
-                echo"$newnegotiation";
+                //echo"$newnegotiation";
     
             }
 
             $lastnegotiation = $dataA["PrixVendeur"];
             $consensus=$dataA["Consensus"];
         
-        if($newnegotiation == true)
+        $sqlZ = "SELECT * FROM item WHERE NumeroID ='$idItem'  ";  
+        $resultZ = mysqli_query($db_handle, $sqlZ);
+        $dataZ = mysqli_fetch_assoc($resultZ);
+        $prixInitial = $dataZ["Prix"];
+
+        if ($montantOffreinput > $prixInitial)
         {
-            $sql0="INSERT INTO acheter_item(loginAcheteur,NumeroIDItem) VALUES ('$login','$idItem')";
-            $result0= mysqli_query($db_handle, $sql0);
-            if ($result0)
+            $erreur = 5;
+            echo ("Offrre invalide");
+            if ($newnegotiation == true )
             {
-                echo"INSERTION ACHETER ITEM OK";
+                ?><meta http-equiv="refresh" content="1; url=catalogue_meilleuroffre.php?erreurMO=5&amp;IdItemErrMO=<?php echo($idItem); ?>"> <?php
             }
             else
             {
-                echo"ERREUR ACHETER ITEM --";
-                echo"$login";
-                echo"$idItem";
+                ?><meta http-equiv="refresh" content="1; url=Panier.php?erreurMO=5&amp;IdItemErrMO=<?php echo($idItem); ?>"> <?php
             }
+        }
 
-
-            $sql="INSERT INTO acheteur_offre(login,prixAcheteur,IdOffre) VALUES ('$login','$montantOffreinput','$idOffre')";
-            $result = mysqli_query($db_handle, $sql);
-            if($result)
+        if($newnegotiation == true && $erreur == 0)
+        {
+            require ("paiements_traitements_meilleureOffre.php");
+            if ($errorPaiement == 0)
             {
-               
-                //on défini le nombre d'offre actuel
-                $newnboffre=$nbOffres+1;
-                
-                echo"nvx nombre offre $newnboffre";
-                $sql1="UPDATE meilleure_offre SET nbOffres= '$newnboffre' WHERE IdOffre='$idOffre'";
-                
-                $result1=mysqli_query($db_handle, $sql1);
-                if ($result1) 
+                $sql0="INSERT INTO acheter_item(loginAcheteur,NumeroIDItem) VALUES ('$login','$idItem')";
+                $result0= mysqli_query($db_handle, $sql0);
+                if ($result0)
                 {
-                    $sql2="UPDATE item SET afficher= '0' WHERE NumeroID='$idItem'";
-                    $result2=mysqli_query($db_handle, $sql2);
-                    if($result2)
+                    //echo"INSERTION ACHETER ITEM OK";
+                }
+                else
+                {
+                    echo"ERREUR ACHETER ITEM --";
+                    echo"$login";
+                    echo"$idItem";
+                }
+
+
+                $sql="INSERT INTO acheteur_offre(login,prixAcheteur,IdOffre,carte) VALUES ('$login','$montantOffreinput','$idOffre','$numeroCarte')";
+                $result = mysqli_query($db_handle, $sql);
+                if($result)
+                {
+                
+                    //on défini le nombre d'offre actuel
+                    $newnboffre=$nbOffres+1;
+                    
+                    //echo"nvx nombre offre $newnboffre";
+                    $sql1="UPDATE meilleure_offre SET nbOffres= '$newnboffre' WHERE IdOffre='$idOffre'";
+                    
+                    $result1=mysqli_query($db_handle, $sql1);
+                    if ($result1) 
                     {
-                        $sql3="INSERT INTO acheter_item(loginAcheteur,NumeroIDItem) VALUES ('$login','$idItem')";
-                        echo"Update item ok";
-                        ?>
-                            <meta http-equiv="refresh" content="1; url=Panier.php"> 
-                        <?php
-                    }
-                    else
-                    {
-                        echo"ERREUR Update item ";
+                        $sql2="UPDATE item SET afficher= '0' WHERE NumeroID='$idItem'";
+                        $result2=mysqli_query($db_handle, $sql2);
+                        if($result2)
+                        {
+                            $sql3="INSERT INTO acheter_item(loginAcheteur,NumeroIDItem) VALUES ('$login','$idItem')";
+                            //echo"Update item ok";
+                            $sql4="UPDATE meilleure_offre SET Consensus='1' WHERE IdOffre='$idOffre'";
+                            $result4=mysqli_query($db_handle, $sql4);
+                            if($result4)
+                            {
+                            ?>
+                                <meta http-equiv="refresh" content="1; url=Panier.php"> 
+                            <?php
+                            }
+                        }
+                        else
+                        {
+                            echo"ERREUR Update item ";
+                        }
                     }
                 }
+            }
+            else
+            {
+                echo ("Erreur paiement");
             }
 
         }
 
-        else if($newnegotiation == false)
+        else if($newnegotiation == false && $erreur == 0)
         {
-            echo"new negociation -- ";
+            //echo"new negociation -- ";
             if($nbOffres<5)
             {
-                echo"nb offres= $nbOffres  -- ";
+                //echo"nb offres= $nbOffres  -- ";
                 $sql="UPDATE acheteur_offre SET prixAcheteur='$montantOffreinput' WHERE IdOffre='$idOffre'";
                 $result = mysqli_query($db_handle, $sql);
 
                 if($result)
                 { 
-                    echo"UPDATING1 OK -- ";
+                    //echo"UPDATING1 OK -- ";
                     
                     //on défini le nombre d'offre actuel
                     $newnboffre=$nbOffres+1;
-                    echo"nvx nombre offre $newnboffre";
+                    //echo"nvx nombre offre $newnboffre";
                     $sql1="UPDATE meilleure_offre SET nbOffres= '$newnboffre' WHERE IdOffre='$idOffre'";
                 
                     $result1=mysqli_query($db_handle, $sql1);
                     if ($result1) 
                     {
-                        echo"UPDATING2 OK -- ";
-                        ?>
-                            <meta http-equiv="refresh" content="1; url=Panier.php"> 
-                        <?php
+                        //echo"UPDATING2 OK -- ";
+                        $sql10="UPDATE meilleure_offre SET Consensus='1' WHERE IdOffre='$idOffre'";
+                        $result10=mysqli_query($db_handle, $sql10);
+                        if($result10)
+                        {
+                            ?>
+                                <meta http-equiv="refresh" content="1; url=Panier.php"> 
+                            <?php
+                        }
 
                     }
                 
@@ -148,23 +186,23 @@
 
                     if($result5)
                     { 
-                        echo"result5";
+                        //echo"result5";
                         $sql6="SELECT * FROM meilleure_offre WHERE IdItemOffre='$idItem' ";
                         $result6=mysqli_query($db_handle, $sql6);
 
                         if($data6=mysqli_fetch_assoc($result6))
-                        {   echo"result6";
+                        {  // echo"result6";
                             $idOffre=$data6["IdOffre"];
                             $sql7="DELETE FROM acheteur_offre WHERE IdOffre='$idOffre'";
                             $result7=mysqli_query($db_handle, $sql7);
 
                             if($result7)
-                           {   echo"result7";
+                           {  // echo"result7";
                                 $sql8="SELECT Prix FROM item WHERE NumeroID='$idItem'";
                                 $result8=mysqli_query($db_handle,$sql8);
                                 $data=mysqli_fetch_assoc($result8);
                                 $PrixV=$data["Prix"];
-                                echo"$PrixV";
+                                //echo"$PrixV";
                                 $newnboffre=0;
                                 $sql9="UPDATE meilleure_offre SET nbOffres ='$newnboffre',PrixVendeur='$PrixV' WHERE IdItemOffre ='$idItem'";
 
@@ -172,7 +210,7 @@
                                 $result9=mysqli_query($db_handle,$sql9);
 
                                 if($result9)
-                                {   echo"result9";
+                                {  // echo"result9";
                                     ?>
                                     <meta http-equiv="refresh" content="1; url=Panier.php"> 
                                     <?php

@@ -93,6 +93,35 @@
                         <?php
                     }
                 }
+                if (isset($data["idMeilleureOffre"]))  // si c'est une enchère = on regarde si on a gagné ou perdu l'enchère (transaction refusée) et il faut prévenir l'utilisateur
+                {
+                    if ($data["accepteeRefusee"] == 1)  // on a gagné
+                    {
+                        ?>
+                            <script>
+                                $(document).ready(function(){ 
+                                    // pour les notifications
+                                    var nomProduit = "<?php echo($data["nomProduit"]); ?>";
+                                    var prix = <?php echo($data["prix"]); ?>;
+                                    $("#notifsDOM").append (`
+                                        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="60000" style="width:280px;">  
+                                            <div class="toast-header">  
+                                                <strong class="mr-auto">Meilleure offre validée</strong>
+                                                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="toast-body">
+                                                La négociation sur le produit `+nomProduit+` a aboutit et avez été automatiquement débité de `+prix+`€
+                                            </div>
+                                        </div>
+                                    `);
+                                    $('.toast').toast('show');
+                                }); 
+                            </script>
+                        <?php
+                    }
+                }
             }
         }
         

@@ -71,12 +71,13 @@
             if ($result)
             {
                 $statut = isset($_SESSION["statut"])?$_SESSION["statut"]:" ";
+                
                 // Ouverture de session si ce n'est pas un ajout par admin
                 if ($statut != "administrateur")
                 {
                     $_SESSION["login"]=$login;
                     $_SESSION["nom"] = $nom;
-                    $_SESSION["statut"] = $statut;
+                    $_SESSION["statut"] = $_POST["statut"];
                    // Redirection
                    ?> <meta http-equiv="refresh" content="0; url=accueil.php?alertCode=2"> <?php
                 }

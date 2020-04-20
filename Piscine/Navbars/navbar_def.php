@@ -104,7 +104,7 @@
 
 
 <nav class="navbar navbar-expand-md">
-    <a class="navbar-brand" href="#"><img src="Images/logoece.png" width="70px" height="30px" alt="Logo"></a>
+    <a class="navbar-brand" href="#"><img src="Images/LogoECEBay.png" width="50px" height="30px" alt="Logo"></a>
     <!-- Logo-->
 
     <!-- Bouton pour les écrans plus petits-->
@@ -141,6 +141,10 @@
             </span>
 
             <!-- Pour les admins seulement: bouton gerer comptes -->
+            <!--<form class="form-inline">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form> -->
             <?php 
                 if ($statut == "administrateur")
                 {
@@ -152,6 +156,8 @@
         </ul>
 
         <ul class="navbar-nav ml-auto" id="elementsDroite">
+            
+            
             <span class="d-inline-block" id="ppvPanier" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="Connectez vous pour accéder au panier">
                 <li class="nav-item"><a class="nav-link" href="Panier.php" id="panier"><i class="fa fa-shopping-cart"></i> Panier
                         <span class="badge badge-light">
