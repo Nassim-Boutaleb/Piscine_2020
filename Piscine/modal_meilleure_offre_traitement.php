@@ -89,9 +89,14 @@
                     {
                         $sql3="INSERT INTO acheter_item(loginAcheteur,NumeroIDItem) VALUES ('$login','$idItem')";
                         echo"Update item ok";
+                        $sql4="UPDATE meilleure_offre SET Consensus='1' WHERE IdOffre='$idOffre'";
+                        $result4=mysqli_query($db_handle, $sql4);
+                        if($result4)
+                        {
                         ?>
                             <meta http-equiv="refresh" content="1; url=Panier.php"> 
                         <?php
+                        }
                     }
                     else
                     {

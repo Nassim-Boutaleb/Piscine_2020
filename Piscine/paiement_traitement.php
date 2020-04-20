@@ -9,7 +9,7 @@
     $login= $_SESSION["login"];
 
     //On a créé une nouvelle carte ou on a utilisé une carte existante ?
-    if (isset($_POST["useBtn"]))
+    if (isset($_POST["useBtn"])&&$_POST["useBtn"]="use")
     {
         $numeroCarte = $_POST["useCarte"];
         echo ("on utilise la carte".$_POST["useCarte"]);
@@ -37,7 +37,7 @@
             if($totalPrix>=$creditCarte)  // c'est trop cher : la transaction est refusée !
             {
                 $error = 2;
-                echo ("Paiement refusé: solde insuffisant");
+                echo ("Paiement refusé: solde insuffisant:  totalPrix= $totalPrix / creditCarte = $creditCarte");
                 ?><meta http-equiv="refresh" content="1; url=paiement.php?alertCodeC=1"><?php
             }
             else  // paiement accepté: on est débité (MAJ de la table), supprimer l'item de la table item (et par voie de conséquence du panier)
@@ -103,11 +103,12 @@
         if ($error == 0)
         {
             echo ("Aucune erreur, redirection en cours");
+            ?><meta http-equiv="refresh" content="1; url=accueil.php?alertCode=15"><?php
         }
 
         
     }
-    else if (isset($_POST["createBtn"]))
+    else if (isset($_POST["createBtn"]) && $_POST["createBtn"]="create" )
     {
         //echo ("on crée une nouvelle carte");
 

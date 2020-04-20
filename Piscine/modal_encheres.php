@@ -37,15 +37,20 @@
         $data2 = mysqli_fetch_assoc($result2);
         $cocherAuto = 0;
         $montantMaxRappel = 0;
+        $maPremiereOffre = true ;  // 1ere fois que je fais une enchère ?
 
         if (isset($data2))
         {
+            $maPremiereOffre = false;
             if ($data2["EnchereAuto"] == 1)
             {
                 $cocherAuto = 1;
                 $montantMaxRappel = $data2["EnchereMax"];
             }
         }
+
+        
+        
 
 
 ?>
@@ -56,6 +61,7 @@
             var erreurEnchere = <?php echo($erreurEnchere); ?>;
             var numeroIdItemERR = <?php echo($numeroIdItemERR); ?>; // l'ID de l'item dont l'enchere est en erreur
             var idItem = <?php echo($idItem); ?>;  // l'id de l'item dont on affiche l'enchere
+            var maPremiereOffre = "<?php echo($maPremiereOffre); ?>"; // boolénes php: true=1 et false =""
 
             // Cliquer sur l'encoche encheres auto pour dévoiler le champ du montant max
             $("#enchereAutoCheckbox"+idItem).on("click",function(){  
@@ -93,6 +99,20 @@
                 document.getElementById("enchereAutoMontant").value = montantMaxRappel;
             }
 
+            // afficher les infos de paiement si c'est ma 1ere offre sur l'enchere
+            if (maPremiereOffre == 1)  
+            {
+                $("#paiement"+idItem).show();
+
+                // rendre les radios obligatoire
+                var radios = document.getElementsByName ("useCarte");
+                for (var i=0 ; i<radios.length ; ++i )
+                {
+                    radios[i].required = true;
+                }
+                
+            }
+
         });
 </script>
 
@@ -107,24 +127,142 @@
         </div>
 
         <div class="modal-body">
-            <?php //echo($idItem); ?>
-            <?php 
-                if ($newEnchere == true)
-                {
-                    ?>
-                        <p>Aucune offre n'a encore été faite. Vous êtes le premier ! </p>
-                        <p>Le prix minimal demandé par le vendeur est <?php echo($meilleureOffre); ?> € </p>
-                    <?php
-                }
-                else
-                {
-                    ?>
-                        <p> Dernière offre: <strong><?php echo($meilleureOffre); ?> €</strong> par: <strong><?php echo($loginMeilleureOffre); ?></strong></p>
-                    <?php
-                }
-            ?>
-            <p>Fin de l'enchère le: <?php echo($dateFinEnchere); ?> </p>
             <form method="post" action="modal_encheres_traitements.php">
+                
+                <!-- Informations de paiement (cachées sauf si c'est ma 1ere offre sur cette enchère) -->
+                <div class="acacher" id="paiement<?php echo($idItem); ?>">
+                    
+                    <div class="container-fluid"> 
+                        <div class="card border-secondary text-center">
+                            <div class="card-header">
+                                Avant d'enchérir, choisissez une carte de paiement
+                            </div>
+
+                            
+                            <div class="card-body">
+                                <h5>Mes cartes enregistrées </h5>
+                                    <table class="table">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th scope="col">Numéro carte</th>
+                                                <th scope="col">Nom</th>
+                                                <th scope="col">Date expiration</th>
+                                                <th scope="col">CVC</th>
+                                                <th scope="col">Crédit restant</th>
+                                                <th scope="col">Utiliser cette carte</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>                        
+                                            <?php
+                                                //identifier le nom de base de données 
+                                                $database = "ecebay"; 
+                                                
+                                                //connectez-vous dans votre BDD 
+                                                //Rappel : votre serveur = localhost | votre login = root | votre mot de pass = '' (rien) 
+                                                $db_handle = mysqli_connect('localhost', 'root', 'root' ); 
+                                                $db_found = mysqli_select_db($db_handle, $database); 
+                                                
+                                                $login = $_SESSION["login"];  
+                                                //si le BDD existe, faire le traitement 
+                                                if ($db_found) 
+                                                { 
+                                                    
+                                                    $sql = "SELECT DISTINCT(numerocarte),dateexpiration,cvc,credit,nom,login FROM paiement WHERE login='$login'";  
+                                                    $result = mysqli_query($db_handle, $sql); 
+                                                    
+                                                    while ($data = mysqli_fetch_assoc($result)) 
+                                                    {
+                                                        $numerocarte = $data["numerocarte"];
+                                                        $dateexpiration = $data["dateexpiration"]; 
+                                                        $cvc = $data["cvc"]; 
+                                                        $credit = $data["credit"]; 
+                                                        $nom = $data["nom"]; 
+
+                                                        ?>
+                                                        
+                                                        <tr>
+                                                            <td><?php echo($numerocarte); ?> </td>
+                                                            <td><?php echo($nom); ?> </td>
+                                                            <td><?php echo($dateexpiration); ?> </td>
+                                                            <td><?php echo($cvc); ?> </td>
+                                                            <td><?php echo($credit); ?> </td>
+                                                            <td><input type="radio" name="useCarte" value="<?php echo($numerocarte); ?>"  ></td>
+                                                        </tr>
+                                                        
+                                                        
+                                                        <?php
+                                                    }
+                                                } 
+                                                else 
+                                                { 
+                                                    echo "Database not found"; 
+                                                }   //end else 
+
+                                            
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                
+                                    
+                                    
+                                    <hr/>
+                                    <h5>Enregistrer une nouvelle carte <input type="radio" name="useCarte" value="nouvCarte"  > </h5> 
+                                    <div class="form-group row">
+                                        <label for="ville" class="col-sm-2 col-form-label">Nom sur la carte</label>
+                                        <input type="" class="form-control col-sm-10" name="nom" id="nom">
+                                        <div class="invalid-feedback">
+                                            Login inconnu
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="ville" class="col-sm-2 col-form-label">Numero de carte </label>
+                                        <input type="text" class="form-control col-sm-10" name="numcarte" id="numcarte" >
+                                        <div class="invalid-feedback">
+                                            Nombre de caractères invalide. Le numéro doit contenir 16 chiffres
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="cp" class="col-sm-2 col-form-label">Date d'expiration</label>
+                                        <input type="date" class="form-control col-sm-10" name="datelimite" id="datelimite">
+                                        <small class="form-text text-muted">JJ/MM/AAAA</small>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="pays" class="col-sm-2 col-form-label">CVC</label>
+                                        <input type="text" class="form-control col-sm-10" name="codesecret" id="codesecret">
+                                        <div class="invalid-feedback">
+                                            Login inconnu
+                                        </div>
+                                    </div>
+
+                    
+                                    <!-- <button type="submit" name="createBtn" value="create" class="btn btn-primary">Enregistrer la carte et payer</button> -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div> <!-- Fin des infos de paiement -->
+
+                
+                <?php //echo($idItem); ?>
+                <?php 
+                    if ($newEnchere == true)
+                    {
+                        ?>
+                            <p>Aucune offre n'a encore été faite. Vous êtes le premier ! </p>
+                            <p>Le prix minimal demandé par le vendeur est <?php echo($meilleureOffre); ?> € </p>
+                        <?php
+                    }
+                    else
+                    {
+                        ?>
+                            <p> Dernière offre: <strong><?php echo($meilleureOffre); ?> €</strong> par: <strong><?php echo($loginMeilleureOffre); ?></strong></p>
+                        <?php
+                    }
+                ?>
+                <p>Fin de l'enchère le: <?php echo($dateFinEnchere); ?> </p>
+                
                 <div class="form-group">
                     <label for="enchereMontant">Faire une enchère</label>
                     <input type="number" class="form-control" id="enchereMontant<?php echo($idItem); ?>" aria-describedby="enchere" name="montantEnchere" value="<?php echo($meilleureOffre+1); ?>" >
@@ -150,14 +288,15 @@
 
                 <input type="hidden" name="idItem" value=<?php echo($idItem); ?> >
                 <input type="hidden" name="urlRedirection" value=<?php echo($urlRed); ?> > <!-- Cette variable $urlRed doit être définie dans la page qui appelle modal_encheres.php -->
+                <input type="hidden" name="maPremiereOffre" value=<?php echo($maPremiereOffre); ?> >
 
                 <button type="submit" class="btn btn-success">Démarer les enchères</button> 
             </form>
-        </div>
+        </div> <!-- Fin modal body -->
 
         <div class="modal-footer">
             <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
             <a href="#"><button type="button" class="btn btn-info">Aide et mentions légales</button></a>
         </div>
-    </div>
-</div>
+    </div> <!-- Fin modal-content -->
+</div> <!-- Fin modal dialogue -->

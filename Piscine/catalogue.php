@@ -13,7 +13,11 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" ></script>
          
 
-        
+        <style>
+            .alert {
+                display:none;
+            }
+        </style>
         
     </head> 
     
@@ -24,6 +28,8 @@
         <!-- Navbar (barre de navigation)-->
  
         <?php require("Navbars/navbar_def.php");  ?>
+
+       
 
        
             <blockquote class="blockquote text-center">
@@ -42,6 +48,9 @@
         $statut = $_SESSION["statut"];
     }
 
+    // Messages d'alerte
+    $alertCode = isset($_GET["alertCode"])?$_GET["alertCode"] : "0" ;
+
     // Dans modal_encheres on a besoin de connaitre l'URL de la page qui l'appelle
     $urlRed = "catalogue.php";
 
@@ -59,6 +68,20 @@
             // Blinder accès à la page
             // on fera après
 
+            // affichage d'une alerte pour la déconnexion
+            var alertCode = <?php echo($alertCode); ?>;
+            if (alertCode == 80) // on affiche le succès de déconnexion
+            {
+                $("#texteAlerteD").text("Pas assez de crédit sur votre carte pour cette enchère");
+                $("#AlerteD").slideDown();
+            }
+
+            if (alertCode == 82) // on affiche le succès de déconnexion
+            {
+                $("#texteAlerteD").text("Erreur relative à la carte de paiement BDD");
+                $("#AlerteD").slideDown();
+            }
+
             // Récupérer les erreurs
             var erreurEnchere = <?php echo($erreurEnchere); ?>;
             var numeroIdItemERR = <?php echo($numeroIdItemERR); ?>;
@@ -73,6 +96,23 @@
         });
 </script>
            
+
+ <!-- Alertes -->
+        <!-- Fenetres d'alertes -->
+        <div class="alert alert-warning alert-dismissible fade show" role="alert" id="Alerte">
+          <strong id="texteAlerte"></strong> 
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="AlerteD">
+          <strong id="texteAlerteD"></strong> 
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
 
         <?php
 

@@ -27,7 +27,7 @@
          <?php 
           if (isset ($_SESSION["login"]))
           {
-            //require("verifier_encheres.php"); 
+            require("verifier_encheres.php"); 
             
             
             ?><script>

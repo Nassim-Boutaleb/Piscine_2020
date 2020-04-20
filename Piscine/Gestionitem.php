@@ -431,48 +431,96 @@
                 {
                     
                     $id=$_GET['id'];
-                    $sql2="DELETE FROM item WHERE NumeroID=$id";
+                    $sql3="SELECT * FROM item WHERE NumeroID='$id'";
+                    $result3=mysqli_query($db_handle,$sql3);
+                    $data3=mysqli_fetch_assoc($result3);
+                    $typevente=$data3["TypeVente"];
+                    if($typevente=='Meilleure Offre')
+                    {
+                        $sql6="SELECT * FROM meilleure_offre WHERE IdItemOffre='$id' ";
+                        $result6=mysqli_query($db_handle, $sql6);
+
+                        if($data6=mysqli_fetch_assoc($result6))
+                        {   
+                            $idOffre=$data6["IdOffre"];
+                            $sql7="DELETE FROM acheteur_offre WHERE IdOffre='$idOffre'";
+                            $result7=mysqli_query($db_handle, $sql7);
+
+                            if($result7)
+                           {   
+
+                                $sql8="DELETE FROM meilleure_offre  WHERE IdItemOffre='$id'";
+                                $result8=mysqli_query($db_handle,$sql8);
+                                if($result8)
+                                {
+                                    $sql2="DELETE FROM item WHERE NumeroID=$id";
+                                    $result2 = mysqli_query($db_handle, $sql2);
+                                    echo"Article supprimé";
+                                }      
+                            }
+                        } 
+
+                    }
+                    else{
+                        $sql2="DELETE FROM item WHERE NumeroID=$id";
                     $result2 = mysqli_query($db_handle, $sql2);
+                    $data2=mysqli_fetch_assoc($result2);
+                    }
                 }                
             }
             
-            if($_GET['action']=='negotiations'){
+            else if($_GET['action']=='negotiations')
+            {
                 $database = "ecebay";
                 $db_handle = mysqli_connect('localhost', 'root', 'root'); 
                 $db_found = mysqli_select_db($db_handle, $database);
                 if ($db_found) 
                 {
-                    $id=$_GET['id'];
-                     $sqlA="SELECT * FROM item WHERE TypeVente='Meilleure Offre' AND afficher='0'";
-                     $resultA=mysqli_query($db_handle,$sqlA);
+                        $vendeur = $_SESSION["login"]; 
+                 
+                        if($_SESSION["statut"] == "administrateur")
+                        {
+                            $sql="SELECT * FROM item";
+                        }
+                            else 
+                        {
+                    //echo ($vendeur);
+                            $sql="SELECT * FROM item WHERE vendeur='$vendeur' ";
+                        }
+
+
+                        $sqlA="SELECT * FROM item WHERE TypeVente='Meilleure Offre' AND afficher='0' AND vendeur='$vendeur'";
+                        $resultA=mysqli_query($db_handle,$sqlA);
                      
                         ?>
                          <br>
                         <h3 style="text-align: center;">Liste des articles en cours de négotiations </h3>
                         <?php
 
-                        while($dataA=mysqli_fetch_assoc($resultA)){
+                        while($dataA=mysqli_fetch_assoc($resultA))
+                        {
+                            $idItem=$dataA["NumeroID"];
 
-                        ?>
+                            ?>
 
-                        <div class="container" id="listeNegotiations">
+                            <div class="container" id="listeNegotiations">
                     
-                        <?php echo $dataA["Nom"];?>
-                        <br>
-                     <button type="submit" name="negocier" value="$id" class="btn btn-secondary " data-toggle="modal" data-target="#offreID<?php echo($id); ?>"><a href="?action=negotiations&amp;id=<?php echo($id); ?>">Negocier</a></button>
+                            <?php echo $dataA["Nom"];?>
+                            <br>
+                            <button type="submit" name="negocier" value="$id" class="btn btn-secondary " data-toggle="modal" data-target="#offreID<?php echo($idItem); ?>">Negocier</a></button>
 
-                    <div class="modal fade" id="offreID<?php echo($id); ?>" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal fade" id="offreID<?php echo($idItem); ?>" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                 <?php require ("modal_meilleure_offre_vendeur.php"); ?>
                             </div>
 
 
-                    <br><br>
-                    </div> 
-                    <?php
+                            <br><br>
+                            </div> 
+                            <?php
 
-                     }
+                        }
                     
-                    }
+                }
                            
             }
         } // fin if isset action

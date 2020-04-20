@@ -12,15 +12,17 @@
         $result2 = mysqli_query($db_handle, $sql2);
         if($result2)
         {
+            echo"ok1";
             $data2 = mysqli_fetch_assoc($result2); 
             $consensus=$data2["Consensus"];
             $idOffre=$data2["IdOffre"];
             $nbOffres=$data2["nbOffres"];
-            $nbTentatives=$nbOffres+1;
+            $nbTentatives=$nbOffres;
             $sqlPA="SELECT * FROM acheteur_offre WHERE IdOffre='$idOffre'";
             $resultPA=mysqli_query($db_handle,$sqlPA);
             if($resultPA)
             {
+                echo"ok2";
                 $dataPA=mysqli_fetch_assoc($resultPA);
                 $lastnegociation = $dataPA["prixAcheteur"];
             }
@@ -72,20 +74,24 @@
         <div class="modal-body">
             <?php //echo($idItem); ?>
             <?php 
-        if($consensus==0)
+        if($consensus==1)
         {   
-             
-            
+             echo"$consensus -  $idOffre - $nbOffres -$nbTentatives";
+
+
+           
+          
             ?>
+
 
                 <p> <?php echo"$nbTentatives";?> éme tentative de négotiation ! la dernière Offre du client est: <?php echo"$lastnegociation";?> </p>
               
 
-              <button  type="button" id="nouvellenegotiation<?php echo($idItem); ?>" class="btn btn-danger" name="nouvellenegotiation">Faire une autre offre</button>
+              <button  type="button" id="nouvellenegotiation<?php echo($idItem); ?>" class="btn btn-danger" name="nouvellenegotiation">Faire une autre offre à l'acheteur </button>
               
 
 
-            <form method="post" action="modal_meilleure_offre_traitement.php" >
+            <form method="post" action="modal_meilleure_offre_traitement_vendeur.php" >
  
                 <div class="form-group acacher" id="montantOffre<?php echo($idItem); ?>" >
 
@@ -94,9 +100,9 @@
 
                                          <input type="number" class="form-control  "  aria-describedby="negotiation"  id="montantOffre" name="montantOffreinput">
 
-                        <!--<small id="NegociationMontantHelp" class="form-text text-muted">Essayez de convaincre notre vendeur</small>-->
+                        
                       <div class="invalid-feedback">
-                            Pour negocier Le montant entré doit être inférieur au prix de l'article, sinon possibilité de se le procurer à l'achat direct
+                            Pour negocier Le montant entré doit être différent du prix de départ
                     </div>
 
 
@@ -106,12 +112,12 @@
                 <input type="hidden" name="idOffre" value=<?php echo($idOffre); ?> >
                 <input type="hidden" name="nbOffres" value=<?php echo($nbOffres); ?> >
 
-                <input type="hidden" name="urlRedirection" value=<?php echo($urlRed); ?> > <!-- Cette variable $urlRed doit être définie dans la page qui appelle modal_encheres.php -->
+                <input type="hidden" name="urlRedirection" value="Gestionitem.php" > <!-- Cette variable $urlRed doit être définie dans la page qui appelle modal_encheres.php -->
                 <button type="submit" class="btn btn-success acacher " id="soumettreoffre<?php echo($idItem); ?>">Soumettre l'offre</button> 
 
             </form>
             <br>
-            <form  method="post" action="modal_meilleure_offre_traitement2.php">
+            <form  method="post" action="modal_meilleure_offre_traitement_vendeur2.php">
                 <input type="hidden" name="idItem" value=<?php echo($idItem); ?> >
                 <input type="hidden" name="idOffre" value=<?php echo($idOffre); ?> >
                 <input type="hidden" name="nbOffres" value=<?php echo($nbOffres); ?> >
@@ -121,6 +127,9 @@
 
         <?php
         
+    }
+    else{
+        ?><p>Vous devez attendre la réponse de l'acheteur avant de proposer une nouvelle offre</p><?php
     }
 
    

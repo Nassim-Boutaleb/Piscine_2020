@@ -39,13 +39,13 @@
                 
                 $nomProduit=$data1["Nom"];
                  echo"OK2";
-                $sql2="SELECT * FROM meilleure_offre WHERE IdItemOffre='$idItem'";
+                $sql2="SELECT * FROM acheteur_offre WHERE IdOffre='$idOffre'";
                 $result2=mysqli_query($db_handle,$sql2);
                 $data2=mysqli_fetch_assoc($result2);
 
                 if($result2){
                     echo"OK3";
-                    $PrixV=$data2["PrixVendeur"];
+                    $PrixV=$data2["prixAcheteur"];
 
                     $sql3 = "INSERT INTO transactions_effectuees (login,idItem,prix,typeVente,idMeilleureOffre,date,accepteeRefusee,nomProduit) VALUES ('$login','$idItem','$PrixV','Meilleure Offre','$idOffre',NOW(),'1','$nomProduit')";
 
@@ -58,10 +58,11 @@
                         $result4=mysqli_query($db_handle,$sql4);
                         if($result4)
                         {
-                            $sql4="DELETE FROM acheteur_offre WHERE IdItemOffre='$idItem";
+                            $sql5="DELETE FROM acheteur_offre WHERE IdOffre='$idOffre'";
+                            $sql6="DELETE FROM meilleure_offre WHERE IdOffre='$idOffre'";
                         echo"OK5";
                         ?>
-                        <meta http-equiv="refresh" content="1; url=Panier.php"> 
+                        <meta http-equiv="refresh" content="1; url=Gestionitem.php"> 
                         <?php
                         }
                     }
